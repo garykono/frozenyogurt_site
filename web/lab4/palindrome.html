@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Problem 2</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            async function getReverseContent() {
+                let response = await fetch("/reverse/palindrome", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type' : 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(
+                        {
+                            "phrase":$("#textbox1").val(),
+                            "strict":$("#checkbox1").is(":checked") ? "true" : "false"
+                        }
+                    )
+                });
+                if (response.ok) {
+                    let json = await response.json();
+                    //Change the color of the textbox according to response
+                    if(json.isPalindrome) {
+                        $("#textbox1").css("background-color", "green");
+                    } else {
+                        $("#textbox1").css("background-color", "red");
+                    }
+                    $("#textbox1").css("color", "white");
+                } else {
+                    alert("HTTP-Error: " + response.status);
+                }
+            }
+
+            function setDefaultBackground() {
+                $("#textbox1").css("background-color", "initial");
+                $("#textbox1").css("color", "initial");
+            }
+
+            $(document).ready(function() {
+                $("#button1").click(function() {
+                    getReverseContent();
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+        <input type="text" id="textbox1" oninput="setDefaultBackground()"><br>
+        <input type="checkbox" id="checkbox1">
+        <label for="checkbox1">Strict?</label><br>
+        <button id="button1">Palindrome?</button>
+    </body>
+
+</html>

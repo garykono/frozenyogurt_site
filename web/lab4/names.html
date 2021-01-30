@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Problem 3</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            async function getReverseContent() {
+                let response = await fetch(`/reverse/names?first=${$("#textbox1").val()}&last=${$("#textbox2").val()}`);
+                if (response.ok) {
+                    let json = await response.json();
+                    //Create an unordered list out of response names
+                    $("#button1").after($("<ul id='list'></ul>"));
+                    for(let i = 0; i < parseInt(json.count); i++) {
+                        $("#list").append($("<li></li>").text(JSON.stringify(json.names[i])));
+                    }
+                    //Change alternating background colors
+                    $("#list").children("li:even").css({"background-color": "aqua", "color":"black"});
+                    $("#list").children("li:odd").css({"background-color": "forestgreen", "color":"white"});
+                } else {
+                    alert("HTTP-Error: " + response.status);
+                }
+            }
+
+            $(document).ready(function() {
+                $("#button1").click(function() {
+                    getReverseContent();
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+        <label for="textbox1">First:</label><br>
+        <input type="text" id="textbox1" value="fValue"><br>
+        <label for="textbox1">Last:</label><br>
+        <input type="text" id="textbox2" value="lValue"><br>
+        <button id="button1">Submit</button>
+    </body>
+
+</html>
