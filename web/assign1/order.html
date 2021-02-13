@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <title>Your Current Order</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+        <!-- External Style Sheet -->
+        <link rel="stylesheet" href="order.css">
+
+        <script src="items.js"></script>
+        <script src="./scripts/order.js"></script>
+    </head>
+
+    <body>
+    <!-- Navbar -->
+    <div class="w3-top">
+    <div class="w3-bar w3-pink w3-card w3-large">
+      <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-pink" href="javascript:void(0);" onclick="navigate()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+      <a href="#" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
+      <a href="./menu.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Menu</a>
+      <a href="./order.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Order</a>
+      <a href="./signin.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Sign-in</a>
+      <a href="./cart.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Shopping Cart</a>
+    </div>
+  
+    <!-- Navbar on small screens -->
+    <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
+      <a href="./menu.html" class="w3-bar-item w3-button w3-padding-large">Menu</a>
+      <a href="./order.html" class="w3-bar-item w3-button w3-padding-large">Order</a>
+      <a href="./signin.html" class="w3-bar-item w3-button w3-padding-large">Sign-in</a>
+      <a href="./cart.html" class="w3-bar-item w3-button w3-padding-large">Shopping Cart</a>
+    </div>
+  </div>
+
+      <!-- Header -->
+      <header class="w3-container w3-border w3-center w3-light-green">
+        <h1 class="w3-margin" style="color: rgb(201, 57, 81); padding-top: 40px; font-size:5vw">Order Page</h1>
+        <!--<button class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Order Now</button>-->
+      </header>
+
+      <!-- Quick Selections -->
+      <div class="container p-3 my-3" style="background-color: white;width:80%">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="primary-category">
+                <h2><b>Quick Selections</b></h2>
+                </div>
+                
+                <br>
+    
+                <ul class="list-group" style="border-style: solid">
+                <li class="list-group-item border-0">
+                    <b>The Classic</b> 
+                    <span class="price">$7.20</span>
+                    <button type="button" class="quick-buttons" id="quickButton0" onclick="submitQuick('theclassic')">
+                        Add to Cart
+                    </button>
+                </li>
+                <li class="list-group-item border-0">
+                    <b>The Works</b>  
+                    <span class="price">$8.85</span>
+                    <button type="button" class="quick-buttons" id="quickButton0"  onclick="submitQuick('theworks')">
+                        Add to Cart
+                    </button>
+                </li>
+                <li class="list-group-item border-0">
+                    <b>Valentine's Kiss</b>  
+                    <span class="price">$7.35</span>
+                    <button type="button" class="quick-buttons" id="quickButton0" onclick="submitQuick('valentineskiss')">
+                        Add to Cart
+                    </button>
+                </li>
+                <li class="list-group-item border-0">
+                    <b>The Jenga and Chill</b>  
+                    <span class="price">$8.40</span>
+                    <button type="button" class="quick-buttons" id="quickButton0" onclick="submitQuick('jengaandchill')">
+                        Add to Cart
+                    </button>
+                </li>
+                </ul>
+            </div>
+    
+            <div class="col-sm-1"></div>
+    
+            <!-- Order History -->
+            <div class="col-sm-4" style="border-style: solid">
+                <div class="order-history-title">
+                <h2><b>Order History</b></h2>
+                </div>
+                <br>
+                <div id="order-history-category">
+                    <ul class="list-group" style="border-style: solid">
+                        <li class="list-group-item border-0">
+                            <span class="order-identifier" id="order-identifier0"></span>
+                            <button type="button" class="history-buttons" id="historyButton0" onclick="submitPastOrder(0)">
+                                Add to Cart
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+        <br><br><br>
+
+      <!-- Order form -->
+      <div class="container p-3 my-3" style="background-color: white;width:50%">
+        <div class="primary-category">
+            <h2><b>Build Your Own</b></h2>
+        </div>
+        <br><br>
+        <div class="form-group">
+            <!-- Order Customization Name -->
+            <div class="primary-category">
+                Name This Order
+                <div class="pull-right required">Required</div><br>
+            </div><br>
+            <input type="text" id="order-name" name="order-name" value=""><br><br>
+
+            <!-- Sizes -->
+            <div id="sizeheader" class="primary-category">
+                Size 
+                <div class="pull-right required">Required</div>
+            </div><br>
+            <div id="sizeoptions"></div><br>
+
+            <!-- Type of Cup -->
+            <div id="cupheader" class="primary-category">
+                Type of Cup
+                <div class="pull-right required">Required</div>
+            </div><br>
+            <div id="cupoptions"></div><br>
+
+            <!-- Flavor -->
+            <div id="flavorheader" class="primary-category">
+                Flavor (You can have a mix of more than 1)
+                <div class="pull-right required">At least 1 Required</div>
+            </div><br>
+
+            <!-- Standard Toppings -->
+            <div id="standardtoppingsheader" class="primary-category">
+                Standard Toppings
+            </div><br>
+
+            <!-- Specialty Toppings -->
+            <div id="specialtytoppingsheader" class="primary-category">
+                Specialty Toppings
+            </div><br><br>
+
+            <!-- Subtotal -->
+            <div style="font-size: 18px;">Subtotal:</div>
+            <div id="subtotal-display">$0.00</div><br><br>
+
+            <!-- Submit -->
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3">
+                    <button type="button" class="confirm-buttons" id="submitbutton" onclick=submitOrder(currentOrder)>
+                        Add to Cart
+                    </button>
+                </div>
+                <div class="col-sm-3">
+                    <button type="button" class="confirm-buttons" id="resetbutton" onclick="resetOrder()">
+                        Reset
+                    </button>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+        </div>
+
+      <!-- Footer -->
+      <footer class="w3-container w3-padding-32 w3-center w3-white">  
+        <div class="w3-xlarge w3-padding-32">
+          <i class="fa fa-facebook-official w3-hover-opacity"></i>
+          <i class="fa fa-instagram w3-hover-opacity"></i>
+          <i class="fa fa-snapchat w3-hover-opacity"></i>
+          <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+          <i class="fa fa-twitter w3-hover-opacity"></i>
+          <i class="fa fa-linkedin w3-hover-opacity"></i>
+      </div>
+      <p>© 2021</p>
+      </footer>
+    </body>
+</html>

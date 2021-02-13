@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>Frozen Yogurt</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
+.w3-bar,h1,button {font-family: "Montserrat", sans-serif}
+body {
+  background-image: url("./images/pattern.png");
+  background-repeat: repeat;
+}
+#cart {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.largeText {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.flex-container {
+  display: flex;
+  align-items: center
+}
+.flex-container > div > p {
+  font-size: 1.4vmax;
+  text-align: center;
+}
+.flex-container > div > button {
+  font-size: 1.2vmax;
+  margin: 10px;
+  min-height: 25px;
+}
+.form-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 1;
+}
+.form-container {
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
+}
+.form-container input[type=text], .form-container input[type=password] {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+}
+.form-container input[type=text]:focus, .form-container input[type=password]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+.form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+</style>
+<body>
+
+ <!-- Navbar -->
+ <div class="w3-top">
+  <div class="w3-bar w3-pink w3-card w3-large">
+  <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-pink" href="javascript:void(0);" onclick="navigate()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+  <a href="#" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
+  <a href="./menu.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Menu</a>
+  <a href="./order.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Order</a>
+  <a href="./signin.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Sign-in</a>
+  <a href="./cart.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Shopping Cart</a>
+  </div>
+
+  <!-- Navbar on small screens -->
+  <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
+  <a href="./menu.html" class="w3-bar-item w3-button w3-padding-large">Menu</a>
+  <a href="./order.html" class="w3-bar-item w3-button w3-padding-large">Order</a>
+  <a href="./signin.html" class="w3-bar-item w3-button w3-padding-large">Sign-in</a>
+  <a href="./cart.html" class="w3-bar-item w3-button w3-padding-large">Shopping Cart</a>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="w3-container w3-border w3-center w3-light-green">
+    <h1 class="w3-margin" style="color: rgb(201, 57, 81); padding-top: 40px; font-size:5vw">Shopping Cart</h1>
+</header>
+
+<!-- Shopping Cart -->
+<div class="w3-row-padding w3-padding-64 w3-container w3-center">
+    <div class="w3-content">
+        <div id="cart" class="w3-display-container w3-card-4 w3-large w3-center w3-white" style="min-height: 200px;">
+            <h1 id="empty" class="largeText" style="color: grey; font-size:4vw; display: block;">Cart is Empty</h1>
+        </div>
+    </div>
+    <div class="w3-padding-small"></div>
+    <div class="w3-content">
+        <div class="w3-display-container w3-card-4 w3-large w3-center w3-white" id="cart" style="width: 26vmax; min-height: 5vh;">
+            <div class="w3-row">
+                <h1 id="sumDisplay" class="largeText" style="color: grey; font-size:2vmin">Current Total: $0.00</h1>
+              </div>
+        </div>
+    </div>
+    <div class="w3-container w3-center w3-padding">
+        <div class="w3-bar">
+            <button onClick="window.location='./index.html';" class="w3-button w3-round w3-light-green w3-card-4 w3-text-white" style="font-size:2vw; min-height: 50px">Add another order</button>
+            <button onclick="openForm()" class="w3-button w3-round w3-pink w3-card-4" style="font-size:2vw; min-height: 50px">Checkout</button>
+        </div>
+    </div>
+</div>
+
+<!-- Checkout Form -->
+<div class="w3-container w3-center"></div>
+  <div class="form-popup w3-card-4 w3-content" id="myForm">
+    <form action="/action_page.php" class="form-container">
+      <h1>Login</h1>
+
+      <label for="email"><b>Credit Card Number</b></label>
+      <input type="text" placeholder="Enter Email" name="email" required>
+
+      <label for="psw"><b>PIN</b></label>
+      <input type="password" placeholder="Enter Password" name="psw" required>
+
+      <button type="button" onClick="checkOut()" class="btn w3-round w3-pink">Checkout</button>
+      <button type="button" class="btn cancel w3-round w3-light-green w3-text-white" onclick="closeForm()">Cancel</button>
+    </form>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-32 w3-center w3-white">  
+  <div class="w3-xlarge w3-padding-32">
+    <i class="fa fa-facebook-official w3-hover-opacity"></i>
+    <i class="fa fa-instagram w3-hover-opacity"></i>
+    <i class="fa fa-snapchat w3-hover-opacity"></i>
+    <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+    <i class="fa fa-twitter w3-hover-opacity"></i>
+    <i class="fa fa-linkedin w3-hover-opacity"></i>
+ </div>
+ <p>© 2021</p>
+</footer>
+
+<!-- Hidden Cart Element -->
+<div id="hCart" class="w3-row w3-border flex-container" style="display: none;">
+    <div class="summText w3-col l9 w3-padding"></div>
+    <div class="w3-col l3 w3-padding" style="align-self: center">
+        <button onclick="edit($(this).parent().parent().attr('id'))" class="w3-round w3-light-green w3-text-white w3-button">Edit</button>
+        <button onclick="deleteSelf($(this).parent().parent().attr('id'));" class="w3-round w3-red w3-button">Delete</button>
+    </div>
+</div>
+
+<script>
+
+$(document).ready(function() {
+  /*var jsonStr = [{
+	name: "Mike",
+	orders: "blargh",
+	orderSummaries: [{
+		ordername: "mike's fav",
+		subtotal: "10.40",
+		summary: "Deep dope dip"
+	}, {
+		ordername: "friday night movie",
+		subtotal: "9.65",
+		summary: "different description"
+	}],
+	orderHistory: []
+}];
+  sessionStorage.setItem("currentCustomer", 0);
+  sessionStorage.setItem("customers", JSON.stringify(jsonStr));*/
+  let customerId =  sessionStorage.getItem("currentCustomer");
+  let customers = JSON.parse(sessionStorage.getItem("customers"));
+  if (customerId >= 0 && customerId < customers.length) {
+    customerId = 0;
+  }
+  addCartElements(customerId, customers);
+})
+
+function addCartElements(customerId, customers) {
+  for (let i = 0; i < customers[customerId].orderSummaries.length; i++) {
+    oSum = customers[customerId].orderSummaries[i];
+    addItem(oSum);
+  }
+}
+
+function addItem(oSum) {
+  $("#empty").css("display", "none");
+  elem++;
+  count++;
+  let subtotal = parseFloat(oSum.subtotal).toFixed(2);
+  let item = $("#hCart").clone().css("display", "flex").attr("id","item" + elem);
+  let str = "<p>" + oSum.ordername + "<br>$" + subtotal + "<br>" + oSum.summary + "</p>";
+  item.find(".summText").append(str);
+  item.appendTo("#cart");
+  addSum(subtotal);
+}
+
+let sum = 0;
+let priceArr = [];
+
+function addSum(subtotal) {
+  subtotal = parseFloat(subtotal);
+  sum = parseFloat(sum);
+  sum += subtotal;
+  priceArr.push(subtotal);
+  $("#sumDisplay").replaceWith("<h1 id=\"sumDisplay\" class=\"largeText\" style=\"color: grey; font-size:2vmin\">Current Total: $" + parseFloat(sum).toFixed(2) + "</h1>");
+}
+
+function removeSum(subtotal) {
+  subtotal = parseFloat(subtotal);
+  sum = parseFloat(sum);
+  sum -= subtotal;
+  if (sum < 0) {
+    sum = 0;
+  }
+  $("#sumDisplay").replaceWith("<h1 id=\"sumDisplay\" class=\"largeText\" style=\"color: grey; font-size:2vmin\">Current Total: $" + (isNaN(parseFloat(sum)) ? (0).toFixed(2) : parseFloat(sum).toFixed(2)) + "</h1>");
+}
+
+function edit(x) {
+  let target = parseInt(x.substring(4));
+  let customerId = sessionStorage.getItem("currentCustomer");
+  let customers = JSON.parse(sessionStorage.getItem("customers"));
+  let editJSON = customers[customerId].orderSummaries[target];
+  sessionStorage.setItem("currentOrder", JSON.stringify(editJSON));
+  window.location.href = './index.html';
+}
+
+// Used to toggle the menu on small screens when clicking on the menu button
+function navigate() {
+  var x = document.getElementById("navDemo");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+
+let count = 0;
+let elem = 0;
+
+function deleteSelf(x) {
+  if ($("#cart").last().css("display") == "block") {
+      count--;
+      let str = "#" + x;
+      $(str).remove();
+      if (count == 0) {
+          $("#empty").css("display", "block");
+          elem = 0;
+      }
+    let y = parseInt(x.substring(4)) - 1;
+    removeSum(priceArr[y]);
+    priceArr.splice(y, 1);
+    let customerId = sessionStorage.getItem("currentCustomer");
+    let customers = JSON.parse(sessionStorage.getItem("customers"));
+    customers[customerId].orderSummaries.splice(y, 1);
+    sessionStorage.setItem("customers", JSON.stringify(customers));
+  }
+}
+
+function openForm() {
+  document.getElementById("myForm").style.display = "block";
+}
+
+function closeForm() {
+  document.getElementById("myForm").style.display = "none";
+}
+
+function checkOut() {
+  let customerId = sessionStorage.getItem("currentCustomer");
+  let customers = JSON.parse(sessionStorage.getItem("customers"));
+  let orders = customers[customerId].orders;
+  let ordLen = orders.length;
+  for (let i = 0; i < ordLen; i++) {
+    customers[customerId].orderHistory.splice(0, 0, JSON.stringify(orders[i]));
+  }
+  sessionStorage.setItem("customers", JSON.stringify(customers));
+  window.location.href = './index.html';
+}
+
+</script>
+
+</body>
+</html>
