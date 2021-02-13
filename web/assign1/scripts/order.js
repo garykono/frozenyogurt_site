@@ -17,9 +17,15 @@ function loadOrder() {
         currentOrder = JSON.parse(currentOrderJSON);
     }
 
-    let tempDate = new Date();
-    $("#order-name").val(`${tempDate.getMonth()}-${tempDate.getDay()}-${tempDate.getFullYear()}`);
-
+    //Order name
+    let currentOrderSummaryJSON = sessionStorage.getItem("currentOrderSummary");
+    if(JSON.parse(currentOrderSummaryJSON) == null) {
+        let tempDate = new Date();
+        $("#order-name").val(`${tempDate.getMonth()}-${tempDate.getDay()}-${tempDate.getFullYear()}`);
+    } else {
+        $("#order-name").val(JSON.parse(currentOrderSummaryJSON)["ordername"]);
+    }
+    
     //Add input to form dynamically using jquery
     //Sizes = 0, Container/cup = 1, Flavor = 2, Standard toppings = 3, Specialty toppings = 4
     var locationToInsertButtons = "Hasn't been assigned a valid value.";
@@ -233,7 +239,6 @@ function replaceSignInNavPlaceHolder() {
       let customers = JSON.parse(sessionStorage.getItem("customers"));
       let currentCustomer = Number(sessionStorage.getItem("currentCustomer"));
       let currentCustomerName = customers[currentCustomer]["name"];
-      console.log(customers);
       $("#smallSignInPlaceholder").html(currentCustomerName);
       $("#smallSignInPlaceholder").removeAttr('href');
       $("#largeSignInPlaceholder").html(currentCustomerName);
@@ -270,7 +275,6 @@ function submitOrder(order) {
     customers[customerIndex]["orders"].push(order);
     customers[customerIndex]["orderSummaries"].push(orderDetails);
     sessionStorage.setItem("customers", JSON.stringify(customers));
-    console.log(JSON.parse(sessionStorage.getItem("customers")));
     //Navigate to cart page
     window.location.href = "./cart.html";
 }
@@ -313,6 +317,6 @@ function submitQuick(quickName) {
 
 function resetOrder() {
     currentOrder = JSON.parse(JSON.stringify(items));
-    window.location.href = "./cart.html";
+    window.location.href = "./order.html";
 }
 

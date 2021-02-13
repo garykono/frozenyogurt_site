@@ -30,9 +30,6 @@
 
 <script>
     window.onload = function() {
-      sessionStorage.clear();
-      // console.log("customers before load: " + sessionStorage.getItem("customers"));
-      // console.log("currentCustomer before load: " + sessionStorage.getItem("currentCustomer"));
       //Initialize session storage
       let initialCustomers;
       if(sessionStorage.getItem("customers") == null) {
@@ -64,7 +61,6 @@
         let customers = JSON.parse(sessionStorage.getItem("customers"));
         let currentCustomer = Number(sessionStorage.getItem("currentCustomer"));
         let currentCustomerName = customers[currentCustomer]["name"];
-        console.log(customers);
         $("#smallSignInPlaceholder").html(currentCustomerName);
         $("#smallSignInPlaceholder").removeAttr('href');
         $("#largeSignInPlaceholder").html(currentCustomerName);
