@@ -2,6 +2,7 @@ var currentOrder;
 
 window.onload = function() {
     //Create a list of all possible items in an order
+    replaceSignInNavPlaceHolder();
     loadOrder()
 }
 
@@ -10,7 +11,7 @@ function loadOrder() {
 
     //Grab current order from session storage
     let currentOrderJSON = sessionStorage.getItem("currentOrder");
-    if(currentOrderJSON == null) {
+    if(JSON.parse(currentOrderJSON) == null) {
         currentOrder = JSON.parse(JSON.stringify(items));
     } else {
         currentOrder = JSON.parse(currentOrderJSON);
@@ -157,38 +158,57 @@ function fillOrderHistory() {
     } else {
         //Get customer history
         var customers = JSON.parse(sessionStorage.getItem("customers"));
-        var currentCustomerHistory = customers[customerID]["orderHistory"];
+        var currentCustomerHistoryOrders = customers[customerID]["orderHistoryOrders"];
+        var currentCustomerHistorySummaries = customers[customerID]["orderHistorySummaries"];
         //Create container
         var mainContainer = document.createElement("div");
         mainContainer.className += "container p-3 my-3";
         var row = document.createElement("div");
         row.className += "row";
         //Add all text and buttons to main container
-        for(let i = 0; i < currentCustomerHistory.length; i++) {
+        for(let i = 0; i < currentCustomerHistorySummaries.length; i++) {
             //Create text
-            var orderNameSummary = document.createElement("div");
-            orderNameSummary.className += "col-sm-6";
-            row.append(orderNameSummary);
+            var orderIdentifierCol= document.createElement("div");
+            orderIdentifierCol.className += "col-sm-6";
+            var orderIdentifier = document.createElement("p");
+            orderIdentifier.innerHTML = currentCustomerHistorySummaries[i]["ordername"];
+            orderIdentifier.className += "past-order-identifier";
+            orderIdentifierCol.append(orderIdentifier);
+            row.append(orderIdentifierCol);
 
             //Create button
+            var orderButtonCol= document.createElement("div");
+            orderButtonCol.className += "col-sm-6";
             var pastOrderSubmitButton = document.createElement("button");
-            pastOrderSubmitButton.className += "col-sm-3";
+            pastOrderSubmitButton.className += "history-buttons";
             pastOrderSubmitButton.id = "history-button" + i;
-            pastOrderSubmitButton.innerHTML = "Load order";
+            pastOrderSubmitButton.innerHTML = "Load";
             pastOrderSubmitButton.addEventListener("click", function() {
+                var customerID = Number(sessionStorage.getItem("currentCustomer"));
                 let customers = JSON.parse(sessionStorage.getItem("customers"));
-                let currentCustomerHistory = customers[customerID]["orderHistory"];
+                let currentCustomerHistoryOrders = customers[customerID]["orderHistoryOrders"];
                 let buttonNum = this.id.charAt(14);
-                let selectedPastOrder = currentCustomerHistory[buttonNum];
-                //Load the order into sessionStorage
+                let selectedPastOrder = currentCustomerHistoryOrders[buttonNum];
                 sessionStorage.setItem("currentOrder", JSON.stringify(selectedPastOrder));
                 //Reload the page
-                window.location.href = "./order.js";
+                window.location.href = "./order.html";
             })
-            row.append(pastOrderSubmitButton);
+            orderButtonCol.append(pastOrderSubmitButton);
+            row.append(orderButtonCol);
 
             mainContainer.append(row);
-            //Add container to history
+            
+            //Make new row for next time
+            row = document.createElement("div");
+            row.className += "row";
+
+            //Wrap in a list item
+            var currentListItem = document.createElement("li");
+            currentListItem.className += "list-group-item border-0";
+            currentListItem.append(mainContainer);
+
+            //Add container to correct location
+            $("#order-history-category").append(currentListItem);
         }
 
 
@@ -202,56 +222,24 @@ function fillOrderHistory() {
     //             </li>
 }
 
-function calculateOrderSubtotal(order) {
-    var subtotal = 0;
-    for(let i = 0; i < order.length; i++) {
-        for(let j = 0; j < order[i].length; j++) {
-            if(order[i][j]["selected"] == "true") {
-                subtotal += Number(order[i][j]["price"]);
-            }
-        }
+function replaceSignInNavPlaceHolder() {
+    let currentCustomerNum = sessionStorage.getItem("currentCustomer");
+    if(currentCustomerNum == 0) {
+      //Make placeholder the sign in button
+      $("#smallSignInPlaceholder").html("Sign-in");
+      $("#largeSignInPlaceholder").html("Sign-in");
+    } else {
+      //Make placeholder the name of the signed in customer
+      let customers = JSON.parse(sessionStorage.getItem("customers"));
+      let currentCustomer = Number(sessionStorage.getItem("currentCustomer"));
+      let currentCustomerName = customers[currentCustomer]["name"];
+      console.log(customers);
+      $("#smallSignInPlaceholder").html(currentCustomerName);
+      $("#smallSignInPlaceholder").removeAttr('href');
+      $("#largeSignInPlaceholder").html(currentCustomerName);
+      $("#largeSignInPlaceholder").removeAttr('href');
     }
-    return subtotal.toFixed(2);
-}
-
-function buildSummary(order) {
-    var summary = "";
-    let subcategoryCheckedItems = [];
-    for(let i = 0; i < order.length; i++) {
-        subcategoryCheckedItems.push([]);
-        for(let j = 0; j < order[i].length; j++) {
-            if(order[i][j]["selected"] == "true") {
-                subcategoryCheckedItems[i].push(order[i][j]["description"]);                
-            }
-        }           
-    }
-    for(let i = 0; i < subcategoryCheckedItems.length; i++) {
-        switch(i) {
-            case 2:
-                summary += "Flavor: ";
-                break;
-            case 3:
-                summary += "Toppings: ";
-                break;
-            case 4:
-                summary += "Specialty Toppings: ";
-                break;
-        }
-        if(subcategoryCheckedItems[i].length == 0) {
-            summary += "none. ";
-            continue;
-        }
-        for(let j = 0; j < subcategoryCheckedItems[i].length; j++) {
-            summary += subcategoryCheckedItems[i][j];
-            if(j == subcategoryCheckedItems[i].length - 1) {
-                summary += ". ";
-            } else {
-                summary += ", ";
-            }
-        }  
-    }
-    return summary;
-}
+  }
 
 function submitOrder(order) {
     //Check to make sure that the minimum requirements have been met
@@ -265,9 +253,6 @@ function submitOrder(order) {
         "summary": buildSummary(order)
     }
 
-    //Add order to current order session storage
-    var currentOrder = sessionStorage.setItem("currentOrder", JSON.stringify(order));
-
     //Add order to customer's profile
     var customerIndex = Number(sessionStorage.getItem("currentCustomer"));
     let customersJSON = sessionStorage.getItem("customers");
@@ -275,20 +260,17 @@ function submitOrder(order) {
     //If the user isn't signed in and there isn't a temporary cart made, make one
     if(customersJSON == "[]") {
         customers = JSON.parse(customersJSON);
-        //Create new customer profile 
+        //Create new customer profile
         customers.push( { "orders": [],
                             "orderSummaries": []
                         });
     } else {
         customers = JSON.parse(customersJSON);
     }
-    console.log(customers);
-    console.log(customerIndex);
     customers[customerIndex]["orders"].push(order);
     customers[customerIndex]["orderSummaries"].push(orderDetails);
-
-    sessionStorage.setItem("customers", customers);
-
+    sessionStorage.setItem("customers", JSON.stringify(customers));
+    console.log(JSON.parse(sessionStorage.getItem("customers")));
     //Navigate to cart page
     window.location.href = "./cart.html";
 }
@@ -326,17 +308,7 @@ function checkMinimumRequirements(order) {
 
 function submitQuick(quickName) {
     var quickOrder = JSON.parse(JSON.stringify(quickOrders));
-    sessionStorage.setItem("currentOrder", JSON.stringify(quickOrder[quickName]));
-    window.location.href = "./cart.html";
-}
-
-function submitPastOrder(index) {
-    //Get customers
-    let customers = sessionStorage.getItem("customers");
-    let currentCustomer = sessionStorage.getItem("currentCustomer");
-    let pastOrder = customers[currentCustomer]["orderHistory"][0];
-    sessionStorage.setItem("currentOrder", pastOrder);
-    window.location.href = "./cart.html";
+    submitOrder(quickOrder[quickName]);
 }
 
 function resetOrder() {

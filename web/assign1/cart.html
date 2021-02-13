@@ -77,23 +77,23 @@ body {
 </style>
 <body>
 
- <!-- Navbar -->
- <div class="w3-top">
+<!-- Navbar -->
+<div class="w3-top">
   <div class="w3-bar w3-pink w3-card w3-large">
-  <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-pink" href="javascript:void(0);" onclick="navigate()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
-  <a href="./menu.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Menu</a>
-  <a href="./order.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Order</a>
-  <a href="./signin.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Sign-in</a>
-  <a href="./cart.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Shopping Cart</a>
+    <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-pink" href="javascript:void(0);" onclick="navigate()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+    <a href="./index.html" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
+    <a href="./menu.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Menu</a>
+    <a href="./order.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Order</a>
+    <a href="./cart.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Shopping Cart</a>
+    <a href="./signin.html" id="largeSignInPlaceholder" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Sign-in</a>
   </div>
 
   <!-- Navbar on small screens -->
   <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
-  <a href="./menu.html" class="w3-bar-item w3-button w3-padding-large">Menu</a>
-  <a href="./order.html" class="w3-bar-item w3-button w3-padding-large">Order</a>
-  <a href="./signin.html" class="w3-bar-item w3-button w3-padding-large">Sign-in</a>
-  <a href="./cart.html" class="w3-bar-item w3-button w3-padding-large">Shopping Cart</a>
+    <a href="./menu.html" class="w3-bar-item w3-button w3-padding-large">Menu</a>
+    <a href="./order.html" class="w3-bar-item w3-button w3-padding-large">Order</a>
+    <a href="./cart.html" class="w3-bar-item w3-button w3-padding-large">Shopping Cart</a>
+    <a href="./signin.html" id="smallSignInPlaceholder" class="w3-bar-item w3-button w3-padding-large" style="float: right;">Sign-in</a>
   </div>
 </div>
 
@@ -119,7 +119,7 @@ body {
     </div>
     <div class="w3-container w3-center w3-padding">
         <div class="w3-bar">
-            <button onClick="window.location='./index.html';" class="w3-button w3-round w3-light-green w3-card-4 w3-text-white" style="font-size:2vw; min-height: 50px">Add another order</button>
+            <button onClick="addAnotherOrder()" class="w3-button w3-round w3-light-green w3-card-4 w3-text-white" style="font-size:2vw; min-height: 50px">Add another order</button>
             <button onclick="openForm()" class="w3-button w3-round w3-pink w3-card-4" style="font-size:2vw; min-height: 50px">Checkout</button>
         </div>
     </div>
@@ -131,11 +131,11 @@ body {
     <form action="/action_page.php" class="form-container">
       <h1>Login</h1>
 
-      <label for="email"><b>Credit Card Number</b></label>
-      <input type="text" placeholder="Enter Email" name="email" required>
+      <label for="creditcard"><b>Credit Card Number</b></label>
+      <input type="text" placeholder="Enter Credit Card" name="creditcard" required>
 
-      <label for="psw"><b>PIN</b></label>
-      <input type="password" placeholder="Enter Password" name="psw" required>
+      <label for="pin"><b>PIN</b></label>
+      <input type="password" placeholder="Enter Pin" name="pin" required>
 
       <button type="button" onClick="checkOut()" class="btn w3-round w3-pink">Checkout</button>
       <button type="button" class="btn cancel w3-round w3-light-green w3-text-white" onclick="closeForm()">Cancel</button>
@@ -168,6 +168,7 @@ body {
 <script>
 
 $(document).ready(function() {
+  replaceSignInNavPlaceHolder();
   /*var jsonStr = [{
 	name: "Mike",
 	orders: "blargh",
@@ -201,18 +202,37 @@ function addCartElements(customerId, customers) {
 
 function addItem(oSum) {
   $("#empty").css("display", "none");
-  elem++;
-  count++;
   let subtotal = parseFloat(oSum.subtotal).toFixed(2);
   let item = $("#hCart").clone().css("display", "flex").attr("id","item" + elem);
   let str = "<p>" + oSum.ordername + "<br>$" + subtotal + "<br>" + oSum.summary + "</p>";
   item.find(".summText").append(str);
   item.appendTo("#cart");
   addSum(subtotal);
+  elem++;
+  count++;
 }
 
 let sum = 0;
 let priceArr = [];
+
+function replaceSignInNavPlaceHolder() {
+      let currentCustomerNum = sessionStorage.getItem("currentCustomer");
+      if(currentCustomerNum == 0) {
+        //Make placeholder the sign in button
+        $("#smallSignInPlaceholder").html("Sign-in");
+        $("#largeSignInPlaceholder").html("Sign-in");
+      } else {
+        //Make placeholder the name of the signed in customer
+        let customers = JSON.parse(sessionStorage.getItem("customers"));
+        let currentCustomer = Number(sessionStorage.getItem("currentCustomer"));
+        let currentCustomerName = customers[currentCustomer]["name"];
+        console.log(customers);
+        $("#smallSignInPlaceholder").html(currentCustomerName);
+        $("#smallSignInPlaceholder").removeAttr('href');
+        $("#largeSignInPlaceholder").html(currentCustomerName);
+        $("#largeSignInPlaceholder").removeAttr('href');
+      }
+    }
 
 function addSum(subtotal) {
   subtotal = parseFloat(subtotal);
@@ -233,12 +253,11 @@ function removeSum(subtotal) {
 }
 
 function edit(x) {
-  let target = parseInt(x.substring(4));
   let customerId = sessionStorage.getItem("currentCustomer");
   let customers = JSON.parse(sessionStorage.getItem("customers"));
-  let editJSON = customers[customerId].orderSummaries[target];
+  let editJSON = customers[customerId].orders[x];
   sessionStorage.setItem("currentOrder", JSON.stringify(editJSON));
-  window.location.href = './index.html';
+  window.location.href = './order.html';
 }
 
 // Used to toggle the menu on small screens when clicking on the menu button
@@ -269,6 +288,7 @@ function deleteSelf(x) {
     let customerId = sessionStorage.getItem("currentCustomer");
     let customers = JSON.parse(sessionStorage.getItem("customers"));
     customers[customerId].orderSummaries.splice(y, 1);
+    customers[customerId].orders.splice(y, 1);
     sessionStorage.setItem("customers", JSON.stringify(customers));
   }
 }
@@ -289,8 +309,14 @@ function checkOut() {
   for (let i = 0; i < ordLen; i++) {
     customers[customerId].orderHistory.splice(0, 0, JSON.stringify(orders[i]));
   }
+  customer[customerId].orders.splice(0,1);
   sessionStorage.setItem("customers", JSON.stringify(customers));
   window.location.href = './index.html';
+}
+
+function addAnotherOrder() {
+  sessionStorage.setItem("currentOrder", "null");
+  window.location='./order.html';
 }
 
 </script>

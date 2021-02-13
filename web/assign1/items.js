@@ -1,3 +1,54 @@
+function calculateOrderSubtotal(order) {
+    var subtotal = 0;
+    for(let i = 0; i < order.length; i++) {
+        for(let j = 0; j < order[i].length; j++) {
+            if(order[i][j]["selected"] == "true") {
+                subtotal += Number(order[i][j]["price"]);
+            }
+        }
+    }
+    return subtotal.toFixed(2);
+}
+
+function buildSummary(order) {
+    var summary = "";
+    let subcategoryCheckedItems = [];
+    for(let i = 0; i < order.length; i++) {
+        subcategoryCheckedItems.push([]);
+        for(let j = 0; j < order[i].length; j++) {
+            if(order[i][j]["selected"] == "true") {
+                subcategoryCheckedItems[i].push(order[i][j]["description"]);                
+            }
+        }           
+    }
+    for(let i = 0; i < subcategoryCheckedItems.length; i++) {
+        switch(i) {
+            case 2:
+                summary += "Flavor: ";
+                break;
+            case 3:
+                summary += "Toppings: ";
+                break;
+            case 4:
+                summary += "Specialty Toppings: ";
+                break;
+        }
+        if(subcategoryCheckedItems[i].length == 0) {
+            summary += "none. ";
+            continue;
+        }
+        for(let j = 0; j < subcategoryCheckedItems[i].length; j++) {
+            summary += subcategoryCheckedItems[i][j];
+            if(j == subcategoryCheckedItems[i].length - 1) {
+                summary += ". ";
+            } else {
+                summary += ", ";
+            }
+        }  
+    }
+    return summary;
+}
+
 const items = [
     [
         {

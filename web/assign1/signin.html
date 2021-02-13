@@ -30,6 +30,29 @@
         <script src="items.js"></script>
 
         <script>
+            window.onload = function() {
+                replaceSignInNavPlaceHolder();
+            }
+
+            function replaceSignInNavPlaceHolder() {
+                let currentCustomerNum = sessionStorage.getItem("currentCustomer");
+                if(currentCustomerNum == 0) {
+                    //Make placeholder the sign in button
+                    $("#smallSignInPlaceholder").html("Sign-in");
+                    $("#largeSignInPlaceholder").html("Sign-in");
+                } else {
+                    //Make placeholder the name of the signed in customer
+                    let customers = JSON.parse(sessionStorage.getItem("customers"));
+                    let currentCustomer = Number(sessionStorage.getItem("currentCustomer"));
+                    let currentCustomerName = customers[currentCustomer]["name"];
+                    console.log(customers);
+                    $("#smallSignInPlaceholder").html(currentCustomerName);
+                    $("#smallSignInPlaceholder").removeAttr('href');
+                    $("#largeSignInPlaceholder").html(currentCustomerName);
+                    $("#largeSignInPlaceholder").removeAttr('href');
+                }
+                }
+
             function login() {
                 let username = $("#usr").val();
                 let password = $("#pwd").val();
@@ -45,7 +68,10 @@
                     alert("Passwords must have at least one letter and one number.");
                     return;
                 }
-                signinFakeUser();
+                signinFakeUser(username);
+
+                //Navigate to home page
+                window.location.href = './cart.html';
             }
 
             function register() {
@@ -64,6 +90,9 @@
                     return;
                 }
                 signinFakeUser(username);
+                
+                //Navigate to home page
+                //window.location.href = './cart.html';
             }
 
             function containsNumber(myString) {
@@ -76,16 +105,22 @@
             function signinFakeUser(username) {
                 //Add user profile to customers list
                 let customers = JSON.parse(sessionStorage.getItem("customers"));
-                let testUser =  { "name": username,
-                      "orders": [],
-                      "orderSummaries": [],
-                      "orderHistory": [testOrder]
-                    }
+                let testUser =  {   "name": username,
+                                    "orders": [],
+                                    "orderSummaries": [],
+                                    "orderHistoryOrders": [testOrder],
+                                    "orderHistorySummaries": [{   "ordername": "Mike's fav",
+                                                                    "subtotal": calculateOrderSubtotal(testOrder),
+                                                                    "summary": buildSummary(testOrder)
+                                                                }]
+                                }
                 customers.push(testUser);
                 sessionStorage.setItem("customers", JSON.stringify(customers));
-                //Change customer number in session storage
-                sessionStorage.setItem("currentCustomer", "1");
 
+                //Change customer number in session storage
+                sessionStorage.setItem("currentCustomer", JSON.stringify(customers.length) - 1);
+
+                console.log(customers);
                 //For testing, check current order
                 // let custIndex = sessionStorage.getItem("currentCustomer");
                 // let custList = JSON.parse(sessionStorage.getItem("customers"));
@@ -98,24 +133,24 @@
 
     <body>
         <!-- Navbar -->
-    <div class="w3-top">
-        <div class="w3-bar w3-pink w3-card w3-large">
-        <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-pink" href="javascript:void(0);" onclick="navigate()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-        <a href="#" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
-        <a href="./menu.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Menu</a>
-        <a href="./order.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Order</a>
-        <a href="./signin.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Sign-in</a>
-        <a href="./cart.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Shopping Cart</a>
+        <div class="w3-top">
+            <div class="w3-bar w3-pink w3-card w3-large">
+            <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-pink" href="javascript:void(0);" onclick="navigate()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+            <a href="./index.html" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
+            <a href="./menu.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Menu</a>
+            <a href="./order.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Order</a>
+            <a href="./cart.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Shopping Cart</a>
+            <a href="./signin.html" id="largeSignInPlaceholder" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Sign-in</a>
+            </div>
+        
+            <!-- Navbar on small screens -->
+            <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
+            <a href="./menu.html" class="w3-bar-item w3-button w3-padding-large">Menu</a>
+            <a href="./order.html" class="w3-bar-item w3-button w3-padding-large">Order</a>
+            <a href="./cart.html" class="w3-bar-item w3-button w3-padding-large">Shopping Cart</a>
+            <a href="./signin.html" id="smallSignInPlaceholder" class="w3-bar-item w3-button w3-padding-large" style="float: right;">Sign-in</a>
+            </div>
         </div>
-    
-        <!-- Navbar on small screens -->
-        <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
-        <a href="./menu.html" class="w3-bar-item w3-button w3-padding-large">Menu</a>
-        <a href="./order.html" class="w3-bar-item w3-button w3-padding-large">Order</a>
-        <a href="./signin.html" class="w3-bar-item w3-button w3-padding-large">Sign-in</a>
-        <a href="./cart.html" class="w3-bar-item w3-button w3-padding-large">Shopping Cart</a>
-        </div>
-    </div>
 
       <!-- Header -->
       <header class="w3-container w3-border w3-center w3-light-green">

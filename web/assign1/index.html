@@ -8,6 +8,9 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <style>
   body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
   .w3-bar,h1,button {font-family: "Montserrat", sans-serif}
@@ -46,6 +49,27 @@
       if(sessionStorage.getItem("currentCustomer") == null) {
         sessionStorage.setItem("currentCustomer", "0");
       }
+
+      replaceSignInNavPlaceHolder();
+    }
+
+    function replaceSignInNavPlaceHolder() {
+      let currentCustomerNum = sessionStorage.getItem("currentCustomer");
+      if(currentCustomerNum == 0) {
+        //Make placeholder the sign in button
+        $("#smallSignInPlaceholder").html("Sign-in");
+        $("#largeSignInPlaceholder").html("Sign-in");
+      } else {
+        //Make placeholder the name of the signed in customer
+        let customers = JSON.parse(sessionStorage.getItem("customers"));
+        let currentCustomer = Number(sessionStorage.getItem("currentCustomer"));
+        let currentCustomerName = customers[currentCustomer]["name"];
+        console.log(customers);
+        $("#smallSignInPlaceholder").html(currentCustomerName);
+        $("#smallSignInPlaceholder").removeAttr('href');
+        $("#largeSignInPlaceholder").html(currentCustomerName);
+        $("#largeSignInPlaceholder").removeAttr('href');
+      }
     }
   </script>
 </head>
@@ -55,19 +79,19 @@
 <div class="w3-top">
   <div class="w3-bar w3-pink w3-card w3-large">
     <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-pink" href="javascript:void(0);" onclick="navigate()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
+    <a href="./index.html" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
     <a href="./menu.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Menu</a>
     <a href="./order.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Order</a>
-    <a href="./signin.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Sign-in</a>
     <a href="./cart.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Shopping Cart</a>
+    <a href="./signin.html" id="largeSignInPlaceholder" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Sign-in</a>
   </div>
 
   <!-- Navbar on small screens -->
   <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
     <a href="./menu.html" class="w3-bar-item w3-button w3-padding-large">Menu</a>
     <a href="./order.html" class="w3-bar-item w3-button w3-padding-large">Order</a>
-    <a href="./signin.html" class="w3-bar-item w3-button w3-padding-large">Sign-in</a>
     <a href="./cart.html" class="w3-bar-item w3-button w3-padding-large">Shopping Cart</a>
+    <a href="./signin.html" id="smallSignInPlaceholder" class="w3-bar-item w3-button w3-padding-large" style="float: right;">Sign-in</a>
   </div>
 </div>
 

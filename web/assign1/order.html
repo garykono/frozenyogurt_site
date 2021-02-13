@@ -34,23 +34,23 @@
     <body>
     <!-- Navbar -->
     <div class="w3-top">
-    <div class="w3-bar w3-pink w3-card w3-large">
-      <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-pink" href="javascript:void(0);" onclick="navigate()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-      <a href="#" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
-      <a href="./menu.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Menu</a>
-      <a href="./order.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Order</a>
-      <a href="./signin.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Sign-in</a>
-      <a href="./cart.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Shopping Cart</a>
+        <div class="w3-bar w3-pink w3-card w3-large">
+        <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-pink" href="javascript:void(0);" onclick="navigate()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+        <a href="./index.html" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
+        <a href="./menu.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Menu</a>
+        <a href="./order.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Order</a>
+        <a href="./cart.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Shopping Cart</a>
+        <a href="./signin.html" id="largeSignInPlaceholder" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Sign-in</a>
+        </div>
+    
+        <!-- Navbar on small screens -->
+        <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
+        <a href="./menu.html" class="w3-bar-item w3-button w3-padding-large">Menu</a>
+        <a href="./order.html" class="w3-bar-item w3-button w3-padding-large">Order</a>
+        <a href="./cart.html" class="w3-bar-item w3-button w3-padding-large">Shopping Cart</a>
+        <a href="./signin.html" id="smallSignInPlaceholder" class="w3-bar-item w3-button w3-padding-large" style="float: right;">Sign-in</a>
+        </div>
     </div>
-  
-    <!-- Navbar on small screens -->
-    <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
-      <a href="./menu.html" class="w3-bar-item w3-button w3-padding-large">Menu</a>
-      <a href="./order.html" class="w3-bar-item w3-button w3-padding-large">Order</a>
-      <a href="./signin.html" class="w3-bar-item w3-button w3-padding-large">Sign-in</a>
-      <a href="./cart.html" class="w3-bar-item w3-button w3-padding-large">Shopping Cart</a>
-    </div>
-  </div>
 
       <!-- Header -->
       <header class="w3-container w3-border w3-center w3-light-green">
@@ -79,21 +79,21 @@
                 <li class="list-group-item border-0">
                     <b>The Works</b>  
                     <span class="price">$8.85</span>
-                    <button type="button" class="quick-buttons" id="quickButton0"  onclick="submitQuick('theworks')">
+                    <button type="button" class="quick-buttons" id="quickButton1"  onclick="submitQuick('theworks')">
                         Add to Cart
                     </button>
                 </li>
                 <li class="list-group-item border-0">
                     <b>Valentine's Kiss</b>  
                     <span class="price">$7.35</span>
-                    <button type="button" class="quick-buttons" id="quickButton0" onclick="submitQuick('valentineskiss')">
+                    <button type="button" class="quick-buttons" id="quickButton2" onclick="submitQuick('valentineskiss')">
                         Add to Cart
                     </button>
                 </li>
                 <li class="list-group-item border-0">
                     <b>The Jenga and Chill</b>  
                     <span class="price">$8.40</span>
-                    <button type="button" class="quick-buttons" id="quickButton0" onclick="submitQuick('jengaandchill')">
+                    <button type="button" class="quick-buttons" id="quickButton3" onclick="submitQuick('jengaandchill')">
                         Add to Cart
                     </button>
                 </li>
@@ -108,16 +108,8 @@
                 <h2><b>Order History</b></h2>
                 </div>
                 <br>
-                <div id="order-history-category">
-                    <ul class="list-group" style="border-style: solid">
-                        <li class="list-group-item border-0">
-                            <span class="order-identifier" id="order-identifier0"></span>
-                            <button type="button" class="history-buttons" id="historyButton0" onclick="submitPastOrder(0)">
-                                Add to Cart
-                            </button>
-                        </li>
-                    </ul>
-                </div>
+                <ul class="list-group" id="order-history-category"style="border-style: solid">
+                </ul>
             </div>
         </div>
     </div>
