@@ -1,0 +1,100 @@
+<!DOCTYPE html> <!-- defines that this document is an HTML5 document -->
+<!-- Comment. It may span multiple lines -->
+
+<html> <!-- the root element of an HTML page -->
+ 
+    <head> <!-- contains meta information about the HTML page -->
+        <title>Hello World</title>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <script type="text/JavaScript">
+
+            async function placeOrder() {
+                let response = await fetch("/orders",  {
+                    method: 'POST',
+                    headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        size: $("#size").val(),
+                        color: $("#color").val(),
+                        option1: $('#option1').val(),
+                        option2: $('#option2').val(),
+                        option3: $('#option3').val()
+                    })
+                })
+                if (response.ok) { // if HTTP-status is 200-299
+                    // get the response body (the method explained below)
+                    let json = await response.json()
+                    console.log(json)
+
+                    if (json.success) {
+                        alert("Your order has been placed.")
+                        window.location.href = "./getorders.html";
+                    }
+                } else {
+                    alert("HTTP-Error: " + response.status)
+                    console.log(response.status)
+                    let json = await response.json()
+                    console.log(json)
+                }
+            }
+
+            async function logout() {
+                let response = await fetch("/auth",  {
+                    method: 'DELETE'
+                })
+                if (response.ok) { // if HTTP-status is 200-299
+                    // get the response body (the method explained below)
+                    let json = await response.json()
+                    console.log(json)
+                    window.location.href='/signin.html'
+
+                } else {
+                    alert("HTTP-Error: " + response.status)
+                    console.log(response.status)
+                    let json = await response.json()
+                    console.log(json)
+                }
+            }
+
+        </script>
+        
+    </head>
+
+    <body> <!-- defines the document's body, and is a container for all the visible contents -->
+
+        <form action="/action_page.php">
+            <div class="form-group">
+              <label for="size">Size:</label>
+              <input type="text" class="form-control" value="large" id="size">
+            </div>
+            <br>
+            <div class="form-group">
+              <label for="color">Color:</label>
+              <input type="text" class="form-control" value="green" id="color">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="option1">Option 1:</label>
+                <input type="text" class="form-control" value="true" id="option1">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="option2">Option 2:</label>
+                <input type="text" class="form-control" value="true" id="option2">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="option3">Option 3:</label>
+                <input type="text" class="form-control" value="false" id="option3">
+            </div>
+            <br>
+          </form>     
+          <button type="submit" onclick="placeOrder()" class="btn btn-primary">Submit</button>
+          <button type="logout" onclick="logout()" class="btn btn-primary">Log Out</button>   
+    </body>
+
+</html>
