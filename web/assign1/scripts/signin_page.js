@@ -102,7 +102,6 @@ async function serverSideSignin(email, password) {
             window.location.href = "./"
         }
     } else {
-        console.log(response.status)
         let json = await response.json()
         console.log(json)
         alert("HTTP-Error: " + response.status + "\n" + json.message)

@@ -224,7 +224,7 @@ function addAnotherOrder() {
 
 function replaceSignInNavPlaceHolder() {
     let currentCustomerUsername = sessionStorage.getItem("currentCustomerUsername");
-    if(currentCustomerUsername == null) {
+    if(getCookie("authorized") != "true") {
       //Add a logout link to nav bar
       var signinNav = document.createElement("a");
       signinNav.href="./signin_page.html";
@@ -241,7 +241,7 @@ function replaceSignInNavPlaceHolder() {
       accountNav.innerHTML = currentCustomerUsername;
       accountNav.className += "w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white";
       $("#signin_container").append(accountNav);
-
+      
       //Add a logout link to nav bar
       var logoutNav = document.createElement("a");
       logoutNav.href="./";
