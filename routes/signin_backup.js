@@ -70,7 +70,7 @@ router.get('/', (request, response, next) => {
         })
     }
 }, (request, response) => {
-    const theQuery = "SELECT Username, Password, Salt, MemberId FROM Members WHERE Email=$1"
+    const theQuery = "SELECT Password, Salt, MemberId FROM Members WHERE Email=$1"
     const values = [request.auth.email]
     pool.query(theQuery, values)
         .then(result => { 
@@ -97,7 +97,7 @@ router.get('/', (request, response, next) => {
                     },
                     config.secret,
                     { 
-                        expiresIn: '7 days' // expires in 14 days
+                        expiresIn: '7 days' // expires in 7 days
                     }
                 )
                 response.cookie('access_token', 'Bearer ' + token,
@@ -113,13 +113,7 @@ router.get('/', (request, response, next) => {
                         //note this cookie is NOT httpOnly                   
                         httpOnly: false     
                     })
-                //use this cookie to provide the username    
-                response.cookie('username', result.rows[0].username,
-                    {
-                        expires: new Date(Date.now() + 7 * 24 * 60 * 60000),
-                        //note this cookie is NOT httpOnly                   
-                        httpOnly: false     
-                    })
+
                 //package and send the results
                 response.json({
                     success: true,

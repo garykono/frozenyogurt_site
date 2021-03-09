@@ -19,9 +19,11 @@ const router = express.Router()
  * @apiName PostAuth
  * @apiGroup Auth
  * 
+ * @apiParam {String} first a users first name
+ * @apiParam {String} last a users last name
  * @apiParam {String} email a users email *unique
  * @apiParam {String} password a users password
- * @apiParam {String} phone a users phone number
+ * @apiParam {String} [username] a username *unique, if none provided, email will be used
  * 
  * @apiParamExample {json} Request-Body-Example:
  *  {
@@ -41,42 +43,27 @@ const router = express.Router()
  * @apiError (400: Email exists) {String} message "Email exists"
  * 
  */ 
-router.post('/', (request, response, next) => {
+router.post('/', (request, response) => {
+
+    //Retrieve data from query params
+    const first = request.body.first
+    const last = request.body.last
+    const username = isProvided(request.body.username) ?  request.body.username : request.body.email
+    const email = request.body.email
+    const password = request.body.password
     //Verify that the caller supplied all the parameters
     //In js, empty strings or null values evaluate to false
-    if(isProvided(request.body.email) && isProvided(request.body.username) && isProvided(request.body.password) && isProvided(request.body.phone)) {
-        next();
-    } else {
-        response.status(400).send({
-            message: "Missing required information"
-        })
-    }
-}, (request, response, next) => {
-    if(validateFields(request.body.email, request.body.username, request.body.password, request.body.phone)) {
-        next();
-    } else {
-        response.status(400).send({
-            message: "Invalid parameters"
-        })
-    }
-}, (request, response) => {
-        //Retrieve data from query params
-        const email = request.body.email
-        const username = request.body.username
-        const password = request.body.password
-        const phone = request.body.phone
-
+    if(isProvided(first) && isProvided(last) && isProvided(username) && isProvided(email) && isProvided(password)) {
         //We're storing salted hashes to make our application more secure
         //If you're interested as to what that is, and why we should use it
         //watch this youtube video: https://www.youtube.com/watch?v=8ZtInClXe1Q
         let salt = crypto.randomBytes(32).toString("hex")
-        let salted_hash_pass = getHash(password, salt)
-        let salted_hash_phone = getHash(phone, salt)
+        let salted_hash = getHash(password, salt)
         
         //We're using placeholders ($1, $2, $3) in the SQL query string to avoid SQL Injection
         //If you want to read more: https://stackoverflow.com/a/8265319
-        let theQuery = "INSERT INTO MEMBERS(Email, Username, Password, Phone, Salt) VALUES ($1, $2, $3, $4, $5) RETURNING Email"
-        let values = [email, username, salted_hash_pass, salted_hash_phone, salt]
+        let theQuery = "INSERT INTO MEMBERS(FirstName, LastName, Username, Email, Password, Salt) VALUES ($1, $2, $3, $4, $5, $6) RETURNING Email"
+        let values = [first, last, username, email, salted_hash, salt]
         pool.query(theQuery, values)
             .then(result => {
                 //We successfully added the user!
@@ -88,7 +75,11 @@ router.post('/', (request, response, next) => {
             .catch((error) => {
                 //log the error
                 // console.log(error)
-                if (error.constraint == "members_email_key") {
+                if (error.constraint == "members_username_key") {
+                    response.status(400).send({
+                        message: "Username exists"
+                    })
+                } else if (error.constraint == "members_email_key") {
                     response.status(400).send({
                         message: "Email exists"
                     })
@@ -98,6 +89,11 @@ router.post('/', (request, response, next) => {
                     })
                 }
             })
+    } else {
+        response.status(400).send({
+            message: "Missing required information"
+        })
+    }
 })
 
 router.get('/hash_demo', (request, response) => {
@@ -113,50 +109,6 @@ router.get('/hash_demo', (request, response) => {
         'unsalted_hash': unsalted_hash
     })
 })
-
-/**
- * Helper functions for verification
- * @param {*} email 
- * @param {*} username
- * @param {*} password 
- * @param {*} phone 
- */
-function validateFields(email, username, password, phone) {
-    if(!validateEmail(email)) {
-        return false;
-    }
-    if(username.length < 4 || username.length > 16) {
-        return false;
-    }
-    if(password.length < 4 || password.length > 16) {
-        return false;
-    }
-    if(!containsLetter(password) || !containsNumber(password)) {
-        return false;
-    }
-    if(phone.length != 10) {
-        return false;
-    }
-    if(!onlyContainsNumbers(phone)) {
-        return false;
-    }
-
-    return true;
-}
-
-function containsNumber(myString) {
-    return /\d/.test(myString);
-}
-function containsLetter(myString) {
-    return /[a-zA-Z]/g.test(myString);
-}
-function onlyContainsNumbers(myString) {
-    return /^\d+$/.test(myString);
-}
-function validateEmail(email) {
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-}
 
 
 module.exports = router

@@ -26,48 +26,9 @@
   }
   </style>
   <!-- for testing use this script -->
-<script src="items.js"></script>
+  <script src="items.js"></script>
 
-<script>
-    window.onload = function() {
-      //Initialize session storage
-      let initialCustomers;
-      if(sessionStorage.getItem("customers") == null) {
-        initialCustomers = [];
-        
-        //Make a temporary user profile and add to storage
-        let tempUser =  { "orders": [],
-                        "orderSummaries": []
-                      }
-        initialCustomers.push(tempUser);
-
-        sessionStorage.setItem("customers", JSON.stringify(initialCustomers));
-      }
-      if(sessionStorage.getItem("currentCustomer") == null) {
-        sessionStorage.setItem("currentCustomer", "0");
-      }
-
-      replaceSignInNavPlaceHolder();
-    }
-
-    function replaceSignInNavPlaceHolder() {
-      let currentCustomerNum = sessionStorage.getItem("currentCustomer");
-      if(currentCustomerNum == 0) {
-        //Make placeholder the sign in button
-        $("#smallSignInPlaceholder").html("Sign-in");
-        $("#largeSignInPlaceholder").html("Sign-in");
-      } else {
-        //Make placeholder the name of the signed in customer
-        let customers = JSON.parse(sessionStorage.getItem("customers"));
-        let currentCustomer = Number(sessionStorage.getItem("currentCustomer"));
-        let currentCustomerName = customers[currentCustomer]["name"];
-        $("#smallSignInPlaceholder").html(currentCustomerName);
-        $("#smallSignInPlaceholder").removeAttr('href');
-        $("#largeSignInPlaceholder").html(currentCustomerName);
-        $("#largeSignInPlaceholder").removeAttr('href');
-      }
-    }
-  </script>
+  <script src="./scripts/index.js"></script>
 </head>
 <body>
 
@@ -78,8 +39,7 @@
     <a href="./index.html" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
     <a href="./menu.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Menu</a>
     <a href="./order.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Order</a>
-    <a href="./cart.html" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Shopping Cart</a>
-    <a href="./signin.html" id="largeSignInPlaceholder" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" style="float: right;">Sign-in</a>
+    <a id="signin_container" style="float: right;"></a>
   </div>
 
   <!-- Navbar on small screens -->
@@ -87,7 +47,7 @@
     <a href="./menu.html" class="w3-bar-item w3-button w3-padding-large">Menu</a>
     <a href="./order.html" class="w3-bar-item w3-button w3-padding-large">Order</a>
     <a href="./cart.html" class="w3-bar-item w3-button w3-padding-large">Shopping Cart</a>
-    <a href="./signin.html" id="smallSignInPlaceholder" class="w3-bar-item w3-button w3-padding-large" style="float: right;">Sign-in</a>
+    <a id="signin_container" style="float: right;"></a>
   </div>
 </div>
 

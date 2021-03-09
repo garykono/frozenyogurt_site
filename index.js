@@ -48,7 +48,6 @@ app.use('/auth', require('./routes/signin.js'))
 app.use('/auth', require('./routes/register.js'))
 
 
-
 app.use('/orders', middleware.checkTokenCookies, require('./routes/demo_orders.js'))
 
 app.use('/cookie_orders', middleware.checkTokenCookies, require('./routes/demo_orders_cookies.js'))
@@ -58,7 +57,7 @@ app.use('/cookie_orders', middleware.checkTokenCookies, require('./routes/demo_o
  * When clients connect to the base URL, hosts html and other static files found 
  * in the web directory.
  */
-app.use("/", express.static('web'))
+app.use("/", express.static('./web/assign1'))
 
 /*
  * When clients connect to the base URL, hosts html and other static files found 
