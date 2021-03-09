@@ -45,7 +45,8 @@ const config = {
  * 
  */ 
 router.get('/', (request, response, next) => {
-    if (isProvided(request.headers.authorization) || request.headers.authorization.startsWith('Basic ')) {
+    console.log(isProvided(request.headers.authorization))
+    if (isProvided(request.headers.authorization) && request.headers.authorization.startsWith('Basic ')) {
         next()
     } else {
         response.status(400).json({ message: 'Missing Authorization Header' })

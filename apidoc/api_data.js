@@ -97,6 +97,205 @@ define({ "api": [
     "groupTitle": "Auth"
   },
   {
+    "type": "get",
+    "url": "/auth",
+    "title": "Request to sign a user in the system",
+    "name": "GetAuth",
+    "group": "Auth",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "authorization",
+            "description": "<p>&quot;username:password&quot; uses Basic Auth</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "boolean",
+            "optional": false,
+            "field": "success",
+            "description": "<p>true when the name is found and password matches</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>&quot;Authentication successful!&quot;&quot;</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>JSON Web Token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 201 OK\n{\n  \"success\": true,\n  \"message\": \"Authentication successful!\",\n  \"token\": \"eyJhbGciO...abc123\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "400: Missing Authorization Header": [
+          {
+            "group": "400: Missing Authorization Header",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>&quot;Missing Authorization Header&quot;</p>"
+          }
+        ],
+        "400: Malformed Authorization Header": [
+          {
+            "group": "400: Malformed Authorization Header",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>&quot;Malformed Authorization Header&quot;</p>"
+          }
+        ],
+        "404: User Not Found": [
+          {
+            "group": "404: User Not Found",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>&quot;User not found&quot;</p>"
+          }
+        ],
+        "400: Invalid Credentials": [
+          {
+            "group": "400: Invalid Credentials",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>&quot;Credentials did not match&quot;</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "routes/signin_backup.js",
+    "groupTitle": "Auth"
+  },
+  {
+    "type": "post",
+    "url": "/auth",
+    "title": "Request to register a user",
+    "name": "PostAuth",
+    "group": "Auth",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>a users email *unique</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>a users password</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>a users username used only for display purposes</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "phone",
+            "description": "<p>a users phone number</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Body-Example:",
+          "content": "{\n    \"email\":\"cfb3@fake.email\",\n    \"password\":\"test12345\"\n    \"username\": \"test\",\n    \"phone\":\"1234567890\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 201": [
+          {
+            "group": "Success 201",
+            "type": "boolean",
+            "optional": false,
+            "field": "success",
+            "description": "<p>true when the name is inserted</p>"
+          },
+          {
+            "group": "Success 201",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>the email of the user inserted</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "400: Missing Parameters": [
+          {
+            "group": "400: Missing Parameters",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>&quot;Missing required information&quot;</p>"
+          }
+        ],
+        "400: Email exists": [
+          {
+            "group": "400: Email exists",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>&quot;Email exists&quot;</p>"
+          }
+        ],
+        "400: Invalid parameters": [
+          {
+            "group": "400: Invalid parameters",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>&quot;Invalid parameters&quot;</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "routes/register.js",
+    "groupTitle": "Auth"
+  },
+  {
     "type": "post",
     "url": "/auth",
     "title": "Request to register a user",
@@ -202,7 +401,7 @@ define({ "api": [
       }
     },
     "version": "0.0.0",
-    "filename": "routes/register.js",
+    "filename": "routes/register_backup.js",
     "groupTitle": "Auth"
   },
   {
@@ -841,6 +1040,70 @@ define({ "api": [
     "version": "0.0.0",
     "filename": "routes/demo_orders.js",
     "groupTitle": "Orders"
+  },
+  {
+    "type": "get",
+    "url": "/cookie_orders",
+    "title": "Request to get all Order entries in the DB",
+    "name": "GetOrders",
+    "group": "Orders_w/Cookies",
+    "description": "<p>Returns all of the order entries in the DB for the user associated with the JWT found in the HTTP Request Cookie.</p>",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "orders",
+            "description": "<p>List of Orders in the database</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "404: No Orders Found": [
+          {
+            "group": "404: No Orders Found",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>&quot;No Orders&quot;</p>"
+          }
+        ],
+        "403: JSON Error": [
+          {
+            "group": "403: JSON Error",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>&quot;Token is not valid&quot; when a JWT is provided but it is expired or otherwise not valid</p>"
+          }
+        ],
+        "401: JSON Error": [
+          {
+            "group": "401: JSON Error",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>&quot;Auth token is not supplied&quot; when a JWT is not provided or the cookie is expired</p>"
+          }
+        ],
+        "400: JSON Error": [
+          {
+            "group": "400: JSON Error",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>&quot;malformed JSON in parameters&quot;</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "routes/demo_orders_cookies.js",
+    "groupTitle": "Orders_w/Cookies"
   },
   {
     "type": "get",
