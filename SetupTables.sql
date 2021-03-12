@@ -14,3 +14,10 @@ CREATE TABLE Demo (DemoID SERIAL PRIMARY KEY,
                         Name VARCHAR(255) NOT NULL UNIQUE,
                         Message VARCHAR(255)
 );
+
+DROP TABLE IF EXISTS Orders CASCADE;
+CREATE TABLE Orders (OrderID SERIAL PRIMARY KEY,
+                     MemberID INT NOT NULL,
+                     OrderHistoryOrder VARCHAR(255) NOT NULL,
+                     Name VARCHAR(255) NOT NULL
+);
