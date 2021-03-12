@@ -44,5 +44,11 @@ function logoutProfile() {
 
     console.log(customers);
 
-    sessionStorage.clear();
+    sessionStorage.removeItem("customers")
+    sessionStorage.removeItem("currentCustomer")
+    sessionStorage.removeItem("currentCustomerUsername")
+    sessionStorage.removeItem("tempEmail")
+    sessionStorage.removeItem("customerId")
+    sessionStorage.removeItem("currentOrder")
+    sessionStorage.removeItem("currentOrderSummary")
 }

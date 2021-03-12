@@ -205,30 +205,34 @@ function checkOut() {
         return;
     }
 
-    let orderSummaries = customers[customerId].orderSummaries;
-    let ordersHistory = customers[customerId].orderHistoryOrders;
-    let orderHistorySummaries = customers[customerId].orderHistorySummaries;
-    let orderIDs = orderHistorySummaries.orderID;
-    let ordLen = orders.length;
-    for (let i = 0; i < ordLen; i++) {
-        //Save order info into history if logged in
-        if(customerId != 0) {
-            let removedOrder = orders[0];
-            let removedSummary = orderSummaries[0];
-            ordersHistory.push(removedOrder);
-            console.log(JSON.stringify(orderHistorySummaries));
-            orderHistorySummaries.push(removedSummary);
-            let orderName = orderSummaries[0]["ordername"];
+    var customerID = Number(sessionStorage.getItem("currentCustomer"));
 
-            if(getCookie("authorized")) {
-                serverStoreOrders(removedOrder, orderName, orderIDs);
+    if(customerID != 0) {
+        let orderSummaries = customers[customerId].orderSummaries;
+        let ordersHistory = customers[customerId].orderHistoryOrders;
+        let orderHistorySummaries = customers[customerId].orderHistorySummaries;
+        let orderIDs = orderHistorySummaries.orderID;
+        let ordLen = orders.length;
+        for (let i = 0; i < ordLen; i++) {
+            //Save order info into history if logged in
+            if(customerId != 0) {
+                let removedOrder = orders[0];
+                let removedSummary = orderSummaries[0];
+                ordersHistory.push(removedOrder);
+                console.log(JSON.stringify(orderHistorySummaries));
+                orderHistorySummaries.push(removedSummary);
+                let orderName = orderSummaries[0]["ordername"];
+
+                if(getCookie("authorized")) {
+                    serverStoreOrders(removedOrder, orderName, orderIDs);
+                }
             }
+            
+            orders.splice(0, 1);
+            orderSummaries.splice(0, 1);
         }
-        
-        orders.splice(0, 1);
-        orderSummaries.splice(0, 1);
+        sessionStorage.setItem("customers", JSON.stringify(customers));
     }
-    sessionStorage.setItem("customers", JSON.stringify(customers));
     window.location.href = './index.html';
 }
   
