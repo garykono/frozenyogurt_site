@@ -1,3 +1,29 @@
+function reconstructCurrentOrder(orderStrEnc) {
+    var orderEncJSON = JSON.parse(orderStrEnc)["bool"];
+    var temp = JSON.parse(orderStrEnc);
+    var currentOrder = JSON.parse(JSON.stringify(items));
+    let index = 0;
+    for (let i = 0; i < currentOrder.length; i++) {
+        for (let j = 0; j < currentOrder[i].length; j++) {
+            orderEncJSON[index] == 't' ? currentOrder[i][j]["selected"] = "true"
+                                            : currentOrder[i][j]["selected"] = "false";
+            index++;
+        }
+    }
+    return currentOrder;
+}
+
+function encodeCurrentOrder(fullOrder) {
+    var jsonStr = "{\"bool\":[";
+    for (let i = 0; i < fullOrder.length; i++) {
+        for (let j = 0; j < fullOrder[i].length; j++) {
+            fullOrder[i][j]["selected"] == 'false' ? jsonStr += "\"f\"," : jsonStr += "\"t\",";
+        }
+    }
+    jsonStr = jsonStr.substring(0,jsonStr.length-1);
+    return jsonStr += "]}";
+}
+
 function calculateOrderSubtotal(order) {
     var subtotal = 0;
     for(let i = 0; i < order.length; i++) {

@@ -78,6 +78,7 @@
   </style>
   <script src="items.js"></script>
   <script src="./scripts/cart.js"></script>
+  <script src="./scripts/login.js"></script>
 
 </head>
 <body>
@@ -133,13 +134,13 @@
   <div class="w3-container w3-center"></div>
     <div class="form-popup w3-card-4 w3-content" id="myForm">
       <form action="/action_page.php" class="form-container">
-        <h1>Login</h1>
+        <h1>Checkout</h1>
 
         <label for="creditcard"><b>Credit Card Number</b></label>
-        <input type="text" placeholder="Enter Credit Card" name="creditcard" required>
+        <input type="text" placeholder="Enter Credit Card" id="creditcard" required>
 
         <label for="pin"><b>PIN</b></label>
-        <input type="password" placeholder="Enter Pin" name="pin" required>
+        <input type="password" placeholder="Enter Pin" id="pin" required>
 
         <button type="button" onClick="checkOut()" class="btn w3-round w3-pink">Checkout</button>
         <button type="button" class="btn cancel w3-round w3-light-green w3-text-white" onclick="closeForm()">Cancel</button>

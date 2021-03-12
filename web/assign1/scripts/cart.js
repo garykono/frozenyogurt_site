@@ -159,6 +159,7 @@ function navigate() {
       x.className = x.className.replace(" w3-show", "");
     }
 }
+
 function deleteSelf(x) {
     if ($("#cart").last().css("display") == "block") {
         count--;
@@ -187,7 +188,14 @@ function closeForm() {
     document.getElementById("myForm").style.display = "none";
 }
   
-function checkOut() {    
+function checkOut() {
+    let CCN = $("#creditcard").val();
+    let PIN = $("#pin").val();
+
+    if(!clientSideValidation(CCN, PIN)) {
+        return;
+    }
+    
     let customerId = sessionStorage.getItem("currentCustomer");
     let customers = JSON.parse(sessionStorage.getItem("customers"));
     let orders = customers[customerId].orders;
@@ -200,6 +208,7 @@ function checkOut() {
     let orderSummaries = customers[customerId].orderSummaries;
     let ordersHistory = customers[customerId].orderHistoryOrders;
     let orderHistorySummaries = customers[customerId].orderHistorySummaries;
+    let orderIDs = orderHistorySummaries.orderID;
     let ordLen = orders.length;
     for (let i = 0; i < ordLen; i++) {
         //Save order info into history if logged in
@@ -207,7 +216,13 @@ function checkOut() {
             let removedOrder = orders[0];
             let removedSummary = orderSummaries[0];
             ordersHistory.push(removedOrder);
+            console.log(JSON.stringify(orderHistorySummaries));
             orderHistorySummaries.push(removedSummary);
+            let orderName = orderSummaries[0]["ordername"];
+
+            if(getCookie("authorized")) {
+                serverStoreOrders(removedOrder, orderName, orderIDs);
+            }
         }
         
         orders.splice(0, 1);
@@ -217,8 +232,35 @@ function checkOut() {
     window.location.href = './index.html';
 }
   
+async function serverStoreOrders(order, name, orderHistoryID) {
+    let response = await fetch("/order",  {
+        method: 'POST',
+        headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'orderhistoryorders': encodeCurrentOrder(order),
+            'name': name
+        })
+    })
+    if (response.ok) { // if HTTP-status is 200-299
+        // get the response body (the method explained below)
+        let json = await response.json()
+        console.log(json)
+        alert(json.body)
+        orderHistoryID.push(json.body)
+    } else {
+        alert("HTTP-Error: " + response.status)
+        console.log(response.status)
+        let json = response
+        console.log(json)
+    }
+}
+
 function addAnotherOrder() {
     sessionStorage.setItem("currentOrder", "null");
+    sessionStorage.setItem("currentOrderSummary", "null");
     window.location='./order.html';
 }
 
@@ -261,41 +303,45 @@ function replaceSignInNavPlaceHolder() {
 
     //Shopping Cart img
     var cartImage = document.createElement("img");
-    cartImage.src="./images/cart.jpg";
+    cartImage.src="./images/shopping_cart.png";
     cartImage.alt = "Shopping cart image.";
     cartImage.style.maxHeight = "20px";
     $("#cartNav").append(cartImage);
   }
 
 function getCookie(cname) {
-var name = cname + "=";
-var decodedCookie = decodeURIComponent(document.cookie);
-var ca = decodedCookie.split(';');
-for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-    c = c.substring(1);
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+        }
     }
-    if (c.indexOf(name) == 0) {
-    return c.substring(name.length, c.length);
-    }
+    return "";
 }
-return "";
-}
-async function logout() {
-    let response = await fetch("/auth",  {
-        method: 'DELETE'
-    })
-    if (response.ok) { // if HTTP-status is 200-299
-        // get the response body (the method explained below)
-        let json = await response.json()
-        console.log(json)
-        window.location.href='/'
 
-    } else {
-        alert("HTTP-Error: " + response.status)
-        console.log(response.status)
-        let json = await response.json()
-        console.log(json)
+function clientSideValidation(creditCardNum, pin) {
+    if(!validateCheckout(creditCardNum)) {
+        alert("Must enter a valid credit card number.");
+        return false;
     }
+    if(!validateCheckout(pin)) {
+        alert("Must enter a valid pin.");
+        return false;
+    }
+    if(creditCardNum.length < 16 || creditCardNum.length > 19) {
+        alert("Credit card number must be between 16 and 19 characters.");
+        return false;
+    }
+    return true;
+}
+
+function validateCheckout(input) {
+    const re = /^[0-9]+$/;
+    return re.test(String(input).toLowerCase());
 }

@@ -41,7 +41,7 @@ function replaceSignInNavPlaceHolder() {
 
     //Shopping Cart img
     var cartImage = document.createElement("img");
-    cartImage.src="./images/cart.jpg";
+    cartImage.src="./images/shopping_cart.png";
     cartImage.alt = "Shopping cart image.";
     cartImage.style.maxHeight = "20px";
     $("#cartNav").append(cartImage);
@@ -58,7 +58,7 @@ function login() {
     //Send to server
     serverSideSignin(email, password);
 
-    //signinFakeUser(email);
+    signinProfile(email);
 
     //Navigate to cart page after signing in
     //window.location.href = './cart.html';
@@ -99,12 +99,48 @@ async function serverSideSignin(email, password) {
 
         if (json.success) {
             sessionStorage.setItem("currentCustomerUsername", getCookie("username"))
+            await serverGetOrders();
             window.location.href = "./"
         }
     } else {
         let json = await response.json()
         console.log(json)
         alert("HTTP-Error: " + response.status + "\n" + json.message)
+    }
+}
+
+async function serverGetOrders() {
+    let response = await fetch("/order",  {
+        method: 'GET'
+    })
+
+    if (response.ok) {
+        let json = await response.json()
+
+        if (json.hasOwnProperty('orders')) {
+            var customerID = Number(sessionStorage.getItem("currentCustomer"));
+            var customers = JSON.parse(sessionStorage.getItem("customers"))
+
+            for(let i = 0; i < json.orders.length; i++) {
+                let ordersHistory = customers[customerID].orderHistoryOrders;
+                let orderHistorySummaries = customers[customerID].orderHistorySummaries;
+                let str = JSON.stringify(json.orders[i].orderhistoryorder).replace(/\\\"/g, "\"").slice(1, -1)
+                let orderJSON = reconstructCurrentOrder(str)
+                let orderDetails = {
+                    "ordername": json.orders[i].name,
+                    "subtotal": calculateOrderSubtotal(orderJSON),
+                    "summary": buildSummary(orderJSON),
+                    "orderid" : json.orders[i].orderid
+                }
+                ordersHistory.push(orderJSON);
+                orderHistorySummaries.push(orderDetails);
+            }
+            sessionStorage.setItem("customers", JSON.stringify(customers));
+        }
+    } else {
+        let json = await response.json()
+        console.log(json)
+        console.log("HTTP-Error: " + response.status + "\n" + json.message)
     }
 }
 
@@ -146,49 +182,4 @@ function register() {
     
     //Navigate to registration page
     window.location.href = './register_page.html';
-}
-
-async function logout() {
-    let response = await fetch("/auth",  {
-        method: 'DELETE'
-    })
-    if (response.ok) { // if HTTP-status is 200-299
-        // get the response body (the method explained below)
-        let json = await response.json()
-        console.log(json)
-        window.location.href='/'
-
-    } else {
-        alert("HTTP-Error: " + response.status)
-        console.log(response.status)
-        let json = await response.json()
-        console.log(json)
-    }
-}
-
-function signinFakeUser(email) {
-    //Add user profile to customers list
-    let customers = JSON.parse(sessionStorage.getItem("customers"));
-    let testUser =  {   "name": email,
-                        "orders": [],
-                        "orderSummaries": [],
-                        "orderHistoryOrders": [testOrder],
-                        "orderHistorySummaries": [{   "ordername": "Mike's fav",
-                                                        "subtotal": calculateOrderSubtotal(testOrder),
-                                                        "summary": buildSummary(testOrder)
-                                                    }]
-                    }
-    customers.push(testUser);
-    sessionStorage.setItem("customers", JSON.stringify(customers));
-
-    //Change customer number in session storage
-    sessionStorage.setItem("currentCustomer", JSON.stringify(customers.length) - 1);
-
-    console.log(customers);
-    //For testing, check current order
-    // let custIndex = sessionStorage.getItem("currentCustomer");
-    // let custList = JSON.parse(sessionStorage.getItem("customers"));
-    // let pastOrder = custList[custIndex]["orderHistory"][0];
-    // sessionStorage.setItem("currentOrder", JSON.stringify(pastOrder));
-    // console.log(sessionStorage.getItem("currentOrder"));
 }

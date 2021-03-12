@@ -8,7 +8,6 @@ window.onload = function() {
 
 function loadOrder() {
     fillOrderHistory();
-
     //Grab current order from session storage
     let currentOrderJSON = sessionStorage.getItem("currentOrder");
     if(JSON.parse(currentOrderJSON) == null) {
@@ -156,6 +155,7 @@ function loadOrder() {
 function fillOrderHistory() {
     //Get history from session storage
     var customerID = Number(sessionStorage.getItem("currentCustomer"));
+    console.log(JSON.stringify(sessionStorage.getItem("customers")));
     if(customerID == 0) {
         var text = document.createElement("p");
         text.innerHTML = "Please sign in to view your order history.";
@@ -166,11 +166,13 @@ function fillOrderHistory() {
         var customers = JSON.parse(sessionStorage.getItem("customers"));
         var currentCustomerHistoryOrders = customers[customerID]["orderHistoryOrders"];
         var currentCustomerHistorySummaries = customers[customerID]["orderHistorySummaries"];
+
         //Create container
         var mainContainer = document.createElement("div");
         mainContainer.className += "container p-3 my-3";
         var row = document.createElement("div");
         row.className += "row";
+
         //Add all text and buttons to main container
         for(let i = 0; i < currentCustomerHistorySummaries.length; i++) {
             //Create text
@@ -182,9 +184,28 @@ function fillOrderHistory() {
             orderIdentifierCol.append(orderIdentifier);
             row.append(orderIdentifierCol);
 
-            //Create button
+            //Delete button
             var orderButtonCol= document.createElement("div");
             orderButtonCol.className += "col-sm-6";
+
+            var pastOrderDeleteButton = document.createElement("button");
+            pastOrderDeleteButton.className += "history-buttons";
+            pastOrderDeleteButton.id = "delete-button" + i;
+            pastOrderDeleteButton.innerHTML = "Delete";
+            pastOrderDeleteButton.addEventListener("click", function() {
+                var customerID = Number(sessionStorage.getItem("currentCustomer"));
+                let customers = JSON.parse(sessionStorage.getItem("customers"));
+                let currentCustomerHistoryOrders = customers[customerID]["orderHistoryOrders"];
+                let currentCustomerHistorySummaries = customers[customerID]["orderHistorySummaries"];
+                serverDeleteOrderHistory(currentCustomerHistorySummaries[i].orderid);
+                currentCustomerHistoryOrders.splice(i, 1);
+                currentCustomerHistorySummaries.splice(i, 1);
+                sessionStorage.setItem("customers", JSON.stringify(customers));
+                window.location.href = "./order.html";
+            })
+            orderButtonCol.append(pastOrderDeleteButton);
+
+            //Create Button
             var pastOrderSubmitButton = document.createElement("button");
             pastOrderSubmitButton.className += "history-buttons";
             pastOrderSubmitButton.id = "history-button" + i;
@@ -193,13 +214,17 @@ function fillOrderHistory() {
                 var customerID = Number(sessionStorage.getItem("currentCustomer"));
                 let customers = JSON.parse(sessionStorage.getItem("customers"));
                 let currentCustomerHistoryOrders = customers[customerID]["orderHistoryOrders"];
-                let buttonNum = this.id.charAt(14);
-                let selectedPastOrder = currentCustomerHistoryOrders[buttonNum];
+                let currentCustomerHistorySummaries = customers[customerID]["orderHistorySummaries"];
+                let selectedPastOrder = currentCustomerHistoryOrders[i];
+                let selectedPastSummary = currentCustomerHistorySummaries[i];
                 sessionStorage.setItem("currentOrder", JSON.stringify(selectedPastOrder));
+                sessionStorage.setItem("currentOrderSummary", JSON.stringify(selectedPastSummary));
+
                 //Reload the page
                 window.location.href = "./order.html";
             })
             orderButtonCol.append(pastOrderSubmitButton);
+
             row.append(orderButtonCol);
 
             mainContainer.append(row);
@@ -216,16 +241,26 @@ function fillOrderHistory() {
             //Add container to correct location
             $("#order-history-category").append(currentListItem);
         }
-
-
     }
-    // <li class="list-group-item border-0">
-    //                 <b>The Classic</b> 
-    //                 <span class="price">$7.20</span>
-    //                 <button type="button" class="quick-buttons" id="quickButton0" onclick="submitQuick('theclassic')">
-    //                     Add to Cart
-    //                 </button>
-    //             </li>
+}
+
+async function serverDeleteOrderHistory(orderid) {
+    let response = await fetch("/order/" + orderid,  {
+        method: 'DELETE'
+    })
+    if (response.ok) { // if HTTP-status is 200-299
+        // get the response body (the method explained below)
+        let json = await response.json()
+        if (json.success) {
+            console.log(json)
+            window.location.href='./order.html'
+        }
+    } else {
+        alert("HTTP-Error: " + response.status)
+        console.log(response.status)
+        let json = await response.json()
+        console.log(json)
+    }
 }
 
 function replaceSignInNavPlaceHolder() {
@@ -267,7 +302,7 @@ function replaceSignInNavPlaceHolder() {
 
     //Shopping Cart img
     var cartImage = document.createElement("img");
-    cartImage.src="./images/cart.jpg";
+    cartImage.src="./images/shopping_cart.png";
     cartImage.alt = "Shopping cart image.";
     cartImage.style.maxHeight = "20px";
     $("#cartNav").append(cartImage);
@@ -288,24 +323,6 @@ function replaceSignInNavPlaceHolder() {
     }
     return "";
   }
-
-async function logout() {
-    let response = await fetch("/auth",  {
-        method: 'DELETE'
-    })
-    if (response.ok) { // if HTTP-status is 200-299
-        // get the response body (the method explained below)
-        let json = await response.json()
-        console.log(json)
-        window.location.href='/'
-
-    } else {
-        alert("HTTP-Error: " + response.status)
-        console.log(response.status)
-        let json = await response.json()
-        console.log(json)
-    }
-}
 
 function submitOrder(order) {
     //Check to make sure that the minimum requirements have been met
@@ -337,6 +354,7 @@ function submitOrder(order) {
     customers[customerIndex]["orderSummaries"].push(orderDetails);
     sessionStorage.setItem("customers", JSON.stringify(customers));
     //Navigate to cart page
+
     window.location.href = "./cart.html";
 }
 
@@ -373,6 +391,7 @@ function checkMinimumRequirements(order) {
 
 function submitQuick(quickName) {
     var quickOrder = JSON.parse(JSON.stringify(quickOrders));
+    $("#order-name").val(quickName);
     submitOrder(quickOrder[quickName]);
 }
 

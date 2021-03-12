@@ -41,7 +41,7 @@ function replaceSignInNavPlaceHolder() {
 
   //Shopping Cart img
   var cartImage = document.createElement("img");
-  cartImage.src="./images/cart.jpg";
+  cartImage.src="./images/shopping_cart.png";
   cartImage.alt = "Shopping cart image.";
   cartImage.style.maxHeight = "20px";
   $("#cartNav").append(cartImage);
@@ -61,22 +61,4 @@ function getCookie(cname) {
     }
   }
   return "";
-}
-
-async function logout() {
-  let response = await fetch("/auth",  {
-      method: 'DELETE'
-  })
-  if (response.ok) { // if HTTP-status is 200-299
-      // get the response body (the method explained below)
-      let json = await response.json()
-      console.log(json)
-      window.location.href='/'
-
-  } else {
-      alert("HTTP-Error: " + response.status)
-      console.log(response.status)
-      let json = await response.json()
-      console.log(json)
-  }
 }
