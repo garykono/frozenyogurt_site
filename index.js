@@ -47,6 +47,7 @@ app.use('/auth', require('./routes/signin.js'))
 
 app.use('/auth', require('./routes/register.js'))
 
+app.use('/order', middleware.checkTokenCookies, require('./routes/order.js'))
 
 app.use('/orders', middleware.checkTokenCookies, require('./routes/demo_orders.js'))
 

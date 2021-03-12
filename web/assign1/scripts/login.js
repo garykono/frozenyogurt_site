@@ -9,8 +9,7 @@ async function logout() {
         logoutProfile();
         window.location.href='/'
     } else {
-        alert("HTTP-Error: " + response.status)
-        console.log(response.status)
+        console.log("HTTP-Error: " + response.status)
         let json = await response.json()
         console.log(json)
     }
