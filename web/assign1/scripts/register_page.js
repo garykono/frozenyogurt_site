@@ -124,10 +124,10 @@ async function serverSideRegistration(email, username, password, phone) {
             window.location.href = "./signin_page.html";
         }
     } else {
-        alert("HTTP-Error: " + response.status)
         console.log(response.status)
         let json = await response.json()
         console.log(json)
+        alert("Error: " + json.message)
     }
 }
 
