@@ -84,7 +84,7 @@ async function serverSideSignin(email, password) {
 
     let encoded = window.btoa(email + ':' + password)
 
-    console.log(encoded)
+    // console.log(encoded)
 
     let response = await fetch("/auth",  {
         method: 'GET',
@@ -95,7 +95,7 @@ async function serverSideSignin(email, password) {
     if (response.ok) { // if HTTP-status is 200-299
         // get the response body (the method explained below)
         let json = await response.json()
-        console.log(json)
+        // console.log(json)
 
         if (json.success) {
             sessionStorage.setItem("currentCustomerUsername", getCookie("username"))
@@ -105,7 +105,7 @@ async function serverSideSignin(email, password) {
         }
     } else {
         let json = await response.json()
-        console.log(json)
+        // console.log(json)
         alert("HTTP-Error: " + response.status + "\n" + json.message)
     }
 }
@@ -140,8 +140,8 @@ async function serverGetOrders() {
         }
     } else {
         let json = await response.json()
-        console.log(json)
-        console.log("HTTP-Error: " + response.status + "\n" + json.message)
+        // console.log(json)
+        // console.log("HTTP-Error: " + response.status + "\n" + json.message)
     }
 }
 

@@ -155,7 +155,7 @@ function loadOrder() {
 function fillOrderHistory() {
     //Get history from session storage
     var customerID = Number(sessionStorage.getItem("currentCustomer"));
-    console.log(JSON.stringify(sessionStorage.getItem("customers")));
+    // console.log(JSON.stringify(sessionStorage.getItem("customers")));
     if(customerID == 0) {
         var text = document.createElement("p");
         text.innerHTML = "Please sign in to view your order history.";
@@ -252,14 +252,14 @@ async function serverDeleteOrderHistory(orderid) {
         // get the response body (the method explained below)
         let json = await response.json()
         if (json.success) {
-            console.log(json)
+            // console.log(json)
             window.location.href='./order.html'
         }
     } else {
         alert("HTTP-Error: " + response.status)
-        console.log(response.status)
+        // console.log(response.status)
         let json = await response.json()
-        console.log(json)
+        // console.log(json)
     }
 }
 

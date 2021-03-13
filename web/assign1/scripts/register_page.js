@@ -51,7 +51,7 @@ function replaceSignInNavPlaceHolder() {
 
 function getTempEmail() {
     let temp = sessionStorage.getItem("tempEmail");
-    console.log(temp);
+    // console.log(temp);
     if (temp) {
         $("#eml").val(temp);
     }
@@ -117,16 +117,16 @@ async function serverSideRegistration(email, username, password, phone) {
     if (response.ok) { // if HTTP-status is 200-299
         // get the response body (the method explained below)
         let json = await response.json()
-        console.log(json)
+        // console.log(json)
 
         if (json.success) {
             alert("Your account has been successfully registered.")
             window.location.href = "./signin_page.html";
         }
     } else {
-        console.log(response.status)
+        // console.log(response.status)
         let json = await response.json()
-        console.log(json)
+        // console.log(json)
         alert("Error: " + json.message)
     }
 }

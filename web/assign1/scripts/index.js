@@ -87,13 +87,13 @@ async function logout() {
     if (response.ok) { // if HTTP-status is 200-299
         // get the response body (the method explained below)
         let json = await response.json()
-        console.log(json)
+        // console.log(json)
         window.location.href='/'
 
     } else {
         alert("HTTP-Error: " + response.status)
-        console.log(response.status)
+        // console.log(response.status)
         let json = await response.json()
-        console.log(json)
+        // console.log(json)
     }
 }
