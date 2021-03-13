@@ -204,18 +204,16 @@ function checkOut() {
         window.location.href = './order.html';
         return;
     }
+    let orderSummaries = customers[customerId].orderSummaries;
 
     var customerID = Number(sessionStorage.getItem("currentCustomer"));
-
     if(customerID != 0) {
-        let orderSummaries = customers[customerId].orderSummaries;
         let ordersHistory = customers[customerId].orderHistoryOrders;
         let orderHistorySummaries = customers[customerId].orderHistorySummaries;
         let orderIDs = orderHistorySummaries.orderID;
         let ordLen = orders.length;
         for (let i = 0; i < ordLen; i++) {
             //Save order info into history if logged in
-            if(customerId != 0) {
                 let removedOrder = orders[0];
                 let removedSummary = orderSummaries[0];
                 ordersHistory.push(removedOrder);
@@ -226,13 +224,18 @@ function checkOut() {
                 if(getCookie("authorized")) {
                     serverStoreOrders(removedOrder, orderName, orderIDs);
                 }
-            }
-            
             orders.splice(0, 1);
             orderSummaries.splice(0, 1);
         }
-        sessionStorage.setItem("customers", JSON.stringify(customers));
+    } else {
+        let ordLen = orders.length;
+        for (let i = 0; i < ordLen; i++) {
+            orders.splice(0, 1);
+            orderSummaries.splice(0, 1);
+        }
     }
+    console.log(customers)
+    sessionStorage.setItem("customers", JSON.stringify(customers));
     window.location.href = './index.html';
 }
   
