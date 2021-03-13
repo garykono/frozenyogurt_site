@@ -58,7 +58,7 @@ function login() {
     //Send to server
     serverSideSignin(email, password);
 
-    signinProfile(email);
+    
 
     //Navigate to cart page after signing in
     //window.location.href = './cart.html';
@@ -100,6 +100,7 @@ async function serverSideSignin(email, password) {
         if (json.success) {
             sessionStorage.setItem("currentCustomerUsername", getCookie("username"))
             await serverGetOrders();
+            signinProfile(email);
             window.location.href = "./"
         }
     } else {
