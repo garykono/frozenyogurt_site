@@ -99,8 +99,8 @@ async function serverSideSignin(email, password) {
 
         if (json.success) {
             sessionStorage.setItem("currentCustomerUsername", getCookie("username"))
-            await serverGetOrders();
             signinProfile(email);
+            await serverGetOrders();
             window.location.href = "./"
         }
     } else {
@@ -125,8 +125,8 @@ async function serverGetOrders() {
             for(let i = 0; i < json.orders.length; i++) {
                 let ordersHistory = customers[customerID].orderHistoryOrders;
                 let orderHistorySummaries = customers[customerID].orderHistorySummaries;
-                let str = JSON.stringify(json.orders[i].orderhistoryorder).replace(/\\\"/g, "\"").slice(1, -1)
-                let orderJSON = reconstructCurrentOrder(str)
+                let str = JSON.stringify(json.orders[i].orderhistoryorder).replace(/\\\"/g, "\"").slice(1, -1);
+                let orderJSON = reconstructCurrentOrder(str);
                 let orderDetails = {
                     "ordername": json.orders[i].name,
                     "subtotal": calculateOrderSubtotal(orderJSON),

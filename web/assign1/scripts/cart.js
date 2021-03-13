@@ -204,38 +204,35 @@ function checkOut() {
         window.location.href = './order.html';
         return;
     }
-    let orderSummaries = customers[customerId].orderSummaries;
 
-    var customerID = Number(sessionStorage.getItem("currentCustomer"));
-    if(customerID != 0) {
+    // var customerID = Number(sessionStorage.getItem("currentCustomer"));
+
+    if(customerId != 0) {
+        let orderSummaries = customers[customerId].orderSummaries;
         let ordersHistory = customers[customerId].orderHistoryOrders;
         let orderHistorySummaries = customers[customerId].orderHistorySummaries;
         let orderIDs = orderHistorySummaries.orderID;
         let ordLen = orders.length;
         for (let i = 0; i < ordLen; i++) {
             //Save order info into history if logged in
+            //if(customerId != 0) {
                 let removedOrder = orders[0];
                 let removedSummary = orderSummaries[0];
                 ordersHistory.push(removedOrder);
-                // console.log(JSON.stringify(orderHistorySummaries));
+                console.log(JSON.stringify(orderHistorySummaries));
                 orderHistorySummaries.push(removedSummary);
                 let orderName = orderSummaries[0]["ordername"];
 
                 if(getCookie("authorized")) {
                     serverStoreOrders(removedOrder, orderName, orderIDs);
                 }
+            }
+            
             orders.splice(0, 1);
             orderSummaries.splice(0, 1);
         }
-    } else {
-        let ordLen = orders.length;
-        for (let i = 0; i < ordLen; i++) {
-            orders.splice(0, 1);
-            orderSummaries.splice(0, 1);
-        }
-    }
-    // console.log(customers)
-    sessionStorage.setItem("customers", JSON.stringify(customers));
+        sessionStorage.setItem("customers", JSON.stringify(customers));
+    //}
     window.location.href = './index.html';
 }
   
@@ -254,14 +251,14 @@ async function serverStoreOrders(order, name, orderHistoryID) {
     if (response.ok) { // if HTTP-status is 200-299
         // get the response body (the method explained below)
         let json = await response.json()
-        // console.log(json)
+        console.log(json)
         alert(json.body)
         orderHistoryID.push(json.body)
     } else {
         alert("HTTP-Error: " + response.status)
-        // console.log(response.status)
+        console.log(response.status)
         let json = response
-        // console.log(json)
+        console.log(json)
     }
 }
 
