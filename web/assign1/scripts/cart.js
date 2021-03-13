@@ -219,7 +219,6 @@ function checkOut() {
                 let removedOrder = orders[0];
                 let removedSummary = orderSummaries[0];
                 ordersHistory.push(removedOrder);
-                console.log(JSON.stringify(orderHistorySummaries));
                 orderHistorySummaries.push(removedSummary);
                 let orderName = orderSummaries[0]["ordername"];
 
