@@ -143,6 +143,12 @@ router.get('/', (request, response, next) => {
         })
 })
 
+/**
+ * @api {delete} /auth Changes cookie fields to sign user out. No status code/messages received.
+ * @apiName DeleteAuth
+ * @apiGroup Auth
+ * 
+ */ 
 router.delete("/", (request, response) => { 
 
     response.cookie('access_token',  '',
