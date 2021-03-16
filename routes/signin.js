@@ -148,6 +148,8 @@ router.get('/', (request, response, next) => {
  * @apiName DeleteAuth
  * @apiGroup Auth
  * 
+ * @apiSuccess {boolean} deleted true when cookie fields are updated to sign out
+ * 
  */ 
 router.delete("/", (request, response) => { 
 

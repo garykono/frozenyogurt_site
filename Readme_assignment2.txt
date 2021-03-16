@@ -46,4 +46,5 @@ Functionality not implemented:
 	because the user can delete previous orders.
 
 Note about Postman tests:
+	Run the script "SetupTables.sql" before testing
 	Some of the tests require that the cookies are cleared in that session (specifically the tests related to JWT verification).

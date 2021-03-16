@@ -1,5 +1,28 @@
 [
   {
+    "type": "delete",
+    "url": "/auth",
+    "title": "Changes cookie fields to sign user out. No status code/messages received.",
+    "name": "DeleteAuth",
+    "group": "Auth",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "boolean",
+            "optional": false,
+            "field": "deleted",
+            "description": "<p>true when cookie fields are updated to sign out</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "routes/signin.js",
+    "groupTitle": "Auth"
+  },
+  {
     "type": "get",
     "url": "/auth",
     "title": "Request to sign a user in the system",
