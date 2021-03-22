@@ -58,7 +58,7 @@ window.onload = function() {
 
     //Shopping Cart img
     var cartImage = document.createElement("img");
-    cartImage.src="../images/shopping_cart.png";
+    cartImage.src="./images/shopping_cart.png";
     cartImage.alt = "Shopping cart image.";
     cartImage.style.maxHeight = "20px";
     $("#cartNav").append(cartImage);

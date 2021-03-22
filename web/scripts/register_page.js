@@ -1,5 +1,7 @@
 window.onload = function() {
     replaceSignInNavPlaceHolder();
+
+    getTempEmail();
 }
 
 function replaceSignInNavPlaceHolder() {
@@ -41,32 +43,43 @@ function replaceSignInNavPlaceHolder() {
 
     //Shopping Cart img
     var cartImage = document.createElement("img");
-    cartImage.src="../images/shopping_cart.png";
+    cartImage.src="./images/shopping_cart.png";
     cartImage.alt = "Shopping cart image.";
     cartImage.style.maxHeight = "20px";
     $("#cartNav").append(cartImage);
+  }
+
+function getTempEmail() {
+    let temp = sessionStorage.getItem("tempEmail");
+    // console.log(temp);
+    if (temp) {
+        $("#eml").val(temp);
+    }
 }
 
-function login() {
+function register() {
     let email = $("#eml").val();
+    let username = $("#usr").val();
     let password = $("#pwd").val();
+    let phone = $("#phone").val();
 
-    if (!clientSideValidation(email, password)) {
+    if(clientSideValidation(email, username, password, phone) == false) {
         return;
     }
 
     //Send to server
-    serverSideSignin(email, password);
+    serverSideRegistration(email, username, password, phone);
 
-    
-
-    //Navigate to cart page after signing in
-    //window.location.href = './cart.html';
+    //signinFakeUser(email);
 }
 
-function clientSideValidation(email, password) {
+function clientSideValidation(email, username, password, phone) {
     if(!validateEmail(email)) {
         alert("Must enter a valid email address.");
+        return false;
+    }
+    if(username.length < 4 || username.length > 16) {
+        alert("Username must be between 4 and 16 characters.");
         return false;
     }
     if(password.length < 4 || password.length > 16) {
@@ -77,20 +90,29 @@ function clientSideValidation(email, password) {
         alert("Passwords must have at least one letter and one number.");
         return false;
     }
-    return true;
+    if(phone.length != 10) {
+        alert("Phone number must be 10 digits.");
+        return false;
+    }
+    if(!onlyContainsNumbers(phone)) {
+        alert("Phone number can only contain digits.");
+        return false;
+    }
 }
 
-async function serverSideSignin(email, password) {
-
-    let encoded = window.btoa(email + ':' + password)
-
-    // console.log(encoded)
-
+async function serverSideRegistration(email, username, password, phone) {
     let response = await fetch("/auth",  {
-        method: 'GET',
+        method: 'POST',
         headers: {
-            'Authorization': 'Basic ' + encoded
-        }
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'email': email,
+            'username': username,
+            'password': password,
+            'phone': phone
+        })
     })
     if (response.ok) { // if HTTP-status is 200-299
         // get the response body (the method explained below)
@@ -98,50 +120,14 @@ async function serverSideSignin(email, password) {
         // console.log(json)
 
         if (json.success) {
-            sessionStorage.setItem("currentCustomerUsername", getCookie("username"))
-            signinProfile(email);
-            await serverGetOrders();
-            window.location.href = "./"
+            alert("Your account has been successfully registered.")
+            window.location.href = "./signin_page.html";
         }
     } else {
+        // console.log(response.status)
         let json = await response.json()
         // console.log(json)
-        alert("HTTP-Error: " + response.status + "\n" + json.message)
-    }
-}
-
-async function serverGetOrders() {
-    let response = await fetch("/order",  {
-        method: 'GET'
-    })
-
-    if (response.ok) {
-        let json = await response.json()
-
-        if (json.hasOwnProperty('orders')) {
-            var customerID = Number(sessionStorage.getItem("currentCustomer"));
-            var customers = JSON.parse(sessionStorage.getItem("customers"))
-
-            for(let i = 0; i < json.orders.length; i++) {
-                let ordersHistory = customers[customerID].orderHistoryOrders;
-                let orderHistorySummaries = customers[customerID].orderHistorySummaries;
-                let str = JSON.stringify(json.orders[i].orderhistoryorder).replace(/\\\"/g, "\"").slice(1, -1);
-                let orderJSON = reconstructCurrentOrder(str);
-                let orderDetails = {
-                    "ordername": json.orders[i].name,
-                    "subtotal": calculateOrderSubtotal(orderJSON),
-                    "summary": buildSummary(orderJSON),
-                    "orderid" : json.orders[i].orderid
-                }
-                ordersHistory.push(orderJSON);
-                orderHistorySummaries.push(orderDetails);
-            }
-            sessionStorage.setItem("customers", JSON.stringify(customers));
-        }
-    } else {
-        let json = await response.json()
-        // console.log(json)
-        // console.log("HTTP-Error: " + response.status + "\n" + json.message)
+        alert("Error: " + json.message)
     }
 }
 
@@ -161,26 +147,16 @@ function getCookie(cname) {
     return "";
   }
 
-//These are verification helper functions for login()
 function containsNumber(myString) {
     return /\d/.test(myString);
 }
 function containsLetter(myString) {
     return /[a-zA-Z]/g.test(myString);
 }
+function onlyContainsNumbers(myString) {
+    return /^\d+$/.test(myString);
+}
 function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
-}
-
-/**
- * If register button is pressed, go to the register page and copy email over
- */
-function register() {
-    //Put email in session storage
-    let email = $("#eml").val();
-    sessionStorage.setItem("tempEmail", email);
-    
-    //Navigate to registration page
-    window.location.href = './register_page.html';
 }
