@@ -31,7 +31,9 @@ app.use(require('cookie-parser')())
  */
 app.use(middleware.jsonError)
 
+
 app.use('/auth', require('./routes/signin.js'))
+
 
 app.use('/auth', require('./routes/register.js'))
 
